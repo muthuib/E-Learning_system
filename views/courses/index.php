@@ -2,6 +2,7 @@
 
 use app\models\Courses;
 use app\models\Enrollments; // Import the Enrollments model
+use app\models\Lessons; // Import the Lessons model to check for lessons
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -52,12 +53,18 @@ $this->title = 'Courses';
                         <?php
                             // Check if the logged-in user is enrolled in the course
                             $isEnrolled = Enrollments::find()->where(['USER_ID' => Yii::$app->user->id, 'COURSE_ID' => $model->COURSE_ID])->exists();
+
+                            // Check if the course has any lessons
+                            $hasLessons = Lessons::find()->where(['COURSE_ID' => $model->COURSE_ID])->exists();
                             ?>
 
                         <?php if ($isEnrolled): ?>
                         <span class='btn btn-info btn-block'>Enrolled</span> <!-- Indicate enrollment -->
-                        <?= Html::a('Continue with Classes', ['lessons/index', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn
-                        btn-dark btn-block']) ?>
+                        <?php if ($hasLessons): ?>
+                        <?= Html::a('Continue with Classes', ['lessons/index', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn btn-dark btn-block']) ?>
+                        <?php else: ?>
+                        <span class='btn btn-secondary btn-block'>No Lessons Available</span>
+                        <?php endif; ?>
                         <?php else: ?>
                         <?= Html::a('Enroll', ['enrollments/create', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn btn-success btn-block']) ?>
                         <?php endif; ?>
