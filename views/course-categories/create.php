@@ -3,11 +3,11 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\Assignments $model */
+/** @var app\models\CourseCategories $model */
 
-$this->title = 'Create Assignments';
+$this->title = 'Create Course Categories';
 ?>
-<div class="assignments-create">
+<div class="course-categories-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

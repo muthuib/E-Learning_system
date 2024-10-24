@@ -1,23 +1,23 @@
 <?php
 
-use app\models\Assignments;
+use app\models\CourseCategories;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\search\AssignmentsSearch $searchModel */
+/** @var app\models\search\CourseCategoriesSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Assignments';
+$this->title = 'Course Categories';
 ?>
-<div class="assignments-index">
+<div class="course-categories-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Assignments', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Course Categories', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -27,17 +27,12 @@ $this->title = 'Assignments';
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'ASSIGNMENT_ID',
             'COURSE_ID',
-            'TITLE',
-            'DESCRIPTION:ntext',
-            'DUE_DATE',
-            //'CREATED_AT',
-            //'UPDATED_AT',
+            'CATEGORY_ID',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Assignments $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]);
+                'urlCreator' => function ($action, CourseCategories $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'COURSE_ID' => $model->COURSE_ID, 'CATEGORY_ID' => $model->CATEGORY_ID]);
                  }
             ],
         ],

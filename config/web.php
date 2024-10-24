@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+//date_default_timezone_set('Africa/Nairobi');
 
 $config = [
     'id' => 'basic',
@@ -13,6 +14,12 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        //formats date and time
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'datetimeFormat' => 'php:Y-m-d H:i:s', // Or your desired format
+            'timeZone' => 'Africa/Nairobi',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'tkfblPDMb1Dm1Hc0GDmrm4EAVyudIUO5',

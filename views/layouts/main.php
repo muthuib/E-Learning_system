@@ -48,7 +48,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                 <?php if (!empty($this->params['breadcrumbs'])) : ?>
                 <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
                 <?php endif ?>
-                <div style="max-width: 400px;">
+                <div style="max-width: 900px;">
                     <!-- Adjust max-width as needed -->
                     <?= Alert::widget() ?>
                 </div>
