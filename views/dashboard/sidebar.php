@@ -44,30 +44,62 @@ $currentUrl = Yii::$app->request->url;
             </ul>
         </li><!-- End  Nav -->
         <!-- check if the user has a permission to manage users -->
-
         <li class="nav-item <?= strpos($currentUrl, '/applicant-details/create') !== false ? 'active' : '' ?>">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/user/manage']) ?>">
                 <i class="bi bi-person-rolodex"></i>
                 <span>Manage Users</span>
             </a>
         </li>
-
-        <!-- End  Details Nav -->
-
+        <!-- End  manage users Nav -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/form-data/index']) ?>">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/assignments/index']) ?>">
                 <i class="bi bi-book"></i>
-                <span>pdf details</span>
+                <span>Assignments</span>
             </a>
-        </li><!-- End details Nav -->
-
+        </li><!-- End of assignments Nav -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/post/index']) ?>">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/courses/index']) ?>">
                 <i class="bi bi-translate"></i></i>
-                <span>Post</span>
+                <span>Courses</span>
             </a>
-        </li><!-- End  Skills Nav -->
-
+        </li><!-- End  Courses Nav -->
+        </li><!-- End  Courses Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/categories/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Categories</span>
+            </a>
+        </li><!-- End of categories Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/course-categories/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Course Categories</span>
+            </a>
+        </li><!-- End of Course categories Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/enrollments/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Enrollments</span>
+            </a>
+        </li><!-- End of enrollments Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/grades/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Grades</span>
+            </a>
+        </li><!-- End of grades Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/lessons/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Lessons</span>
+            </a>
+        </li><!-- End of lessons Nav -->
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/submissions/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Submissions</span>
+            </a>
+        </li><!-- End of submissions Nav -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/role/index']) ?>">
                 <i class="bi bi-buildings"></i>

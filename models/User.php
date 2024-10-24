@@ -262,4 +262,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             ->setSubject('Email confirmation for ' . Yii::$app->name)
             ->send();
     }
+
+//relation method to define the relationship with the auth_assignment table:
+//you need to create model AuthAssignments
+    public function getAuthAssignments()
+    {
+        return $this->hasMany(AuthAssignment::class, ['user_id' => 'ID']);
+    }
 }

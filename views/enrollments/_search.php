@@ -4,32 +4,24 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\search\AssignmentsSearch $model */
+/** @var app\models\search\EnrollmentsSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="assignments-search">
+<div class="enrollments-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'ASSIGNMENT_ID') ?>
+    <?= $form->field($model, 'ENROLLMENT_ID') ?>
+
+    <?= $form->field($model, 'USER_ID') ?>
 
     <?= $form->field($model, 'COURSE_ID') ?>
 
-    <?= $form->field($model, 'TITLE') ?>
-
-    <?= $form->field($model, 'DESCRIPTION') ?>
-
-    <?= $form->field($model, 'DUE_DATE') ?>
-
-    <?php // echo $form->field($model, 'CREATED_AT') 
-    ?>
-
-    <?php // echo $form->field($model, 'UPDATED_AT') 
-    ?>
+    <?= $form->field($model, 'ENROLLED_AT') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
