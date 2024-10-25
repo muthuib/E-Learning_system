@@ -5,10 +5,8 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Assignments $model */
 
-$this->title = 'Update Assignments: ' . $model->TITLE;
-$this->params['breadcrumbs'][] = ['label' => 'Assignments', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->TITLE, 'url' => ['view', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Update Assignments';
+
 ?>
 <div class="assignments-update">
 

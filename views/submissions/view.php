@@ -6,9 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Submissions $model */
 
-$this->title = $model->SUBMISSION_ID;
-$this->params['breadcrumbs'][] = ['label' => 'Submissions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="submissions-view">
@@ -32,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'SUBMISSION_ID',
             'ASSIGNMENT_ID',
             'USER_ID',
+            'CONTENT',
             'FILE_URL:url',
             'SUBMITTED_AT',
         ],
