@@ -27,7 +27,7 @@ use yii\bootstrap5\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton('Submit Assignment', ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Back', ['index'], ['class' => 'btn btn-secondary']) ?>
+        <?= Html::a('Back to Assignments', ['assignments/index'], ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

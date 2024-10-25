@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
 
 <div class="enrollments-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'enrollment-form']); ?>
 
     <?= $form->field($model, 'USER_ID')->hiddenInput(['value' => Yii::$app->user->id])->label(false) ?>
 
@@ -33,7 +33,7 @@ use yii\helpers\ArrayHelper;
 </div>
 
 <!-- Add the AJAX script here -->
-<!-- Ensures that only courses which are not enrolled by logged in user are available in the dropdown -->
+<!-- Ensures that only courses which are not enrolled by the logged-in user are available in the dropdown -->
 <?php
 $script = <<< JS
 $(document).ready(function () {
@@ -48,6 +48,19 @@ $(document).ready(function () {
                 $('#course-id-dropdown').append('<option value="' + id + '">' + name + '</option>');
             });
         }
+    });
+
+    // Add form submit handler
+    $('#enrollment-form').on('beforeSubmit', function (e) {
+        // Check if the selected value is null (or empty)
+        if ($('#course-id-dropdown').val() === '') {
+            // Prevent form submission
+            e.preventDefault();
+            // Display the alert message
+            alert('Please select a course.');
+            return false; // Stop further processing
+        }
+        return true; // Allow form submission
     });
 });
 JS;

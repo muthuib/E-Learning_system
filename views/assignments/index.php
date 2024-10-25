@@ -32,7 +32,6 @@ $this->title = 'Assignments';
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        'ASSIGNMENT_ID',
         [
             'attribute' => 'COURSE_ID',
             'label' => 'Course Name',
