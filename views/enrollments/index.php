@@ -24,9 +24,11 @@ $this->title = 'Enrollments';
             <!-- Adjust the col-md-4 for the number of columns per row -->
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title"><?= Html::encode($model->cOURSE->COURSE_NAME) ?></h5>
+                    <h5 class="card-title">
+                        <?= Html::encode($model->cOURSE ? $model->cOURSE->COURSE_NAME : 'Course Not Found') ?>
+                    </h5>
                     <p class="card-text">
-                        <?= Html::encode($model->uSER->EMAIL) ?><br>
+                        <?= Html::encode($model->uSER ? $model->uSER->EMAIL : 'User Not Found') ?><br>
                         <strong>Enrolled At:</strong> <?= Html::encode($model->ENROLLED_AT) ?>
                     </p>
                     <div class="d-flex justify-content-between">

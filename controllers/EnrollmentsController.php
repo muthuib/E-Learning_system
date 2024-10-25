@@ -176,4 +176,19 @@ class EnrollmentsController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    //function to show students enrolled per course
+    public function actionStudentsPerCourse()
+    {
+        $courses = Courses::find()->with('enrollments.uSER')->all();
+
+        return $this->render('students-per-course', [
+            'dataProvider' => new \yii\data\ArrayDataProvider([
+                'allModels' => $courses,
+                'pagination' => [
+                    'pageSize' => 10,
+                ],
+            ]),
+        ]);
+    }
+
 }
