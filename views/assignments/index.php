@@ -38,24 +38,31 @@ $this->title = 'Assignments';
             'TITLE',
             'DESCRIPTION:ntext',
             'DUE_DATE',
-            // Both students, instructors, and admins should see the view button
-            // Students cannot see update and delete buttons
             [
                 'class' => ActionColumn::className(),
-                'template' => '{view} {submit}' . (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor') ? ' {update} {delete}' : ''),
+                'template' => '{view} {submitOrSubmitted}' . (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor') ? ' {update} {delete}' : ''),
                 'buttons' => [
-                    'submit' => function ($url, $model) {
-                        return Html::a(
-                            'Submit',
-                            ['submissions/submit', 'id' => $model->ASSIGNMENT_ID],
-                            ['class' => 'btn btn-primary btn-sm']
-                        );
+                    'submitOrSubmitted' => function ($url, $model) {
+                        // Use the new method to check if the assignment has been submitted
+                        if ($model->isSubmitted()) {
+                            return Html::button(
+                                'Submitted',
+                                ['class' => 'btn btn-success btn-sm', 'disabled' => true] // Disable the button
+                            );
+                        } else {
+                            return Html::a(
+                                'Submit',
+                                ['submissions/submit', 'id' => $model->ASSIGNMENT_ID],
+                                ['class' => 'btn btn-primary btn-sm']
+                            );
+                        }
                     },
                 ],
                 'urlCreator' => function ($action, Assignments $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]);
                 },
             ],
+
         ],
     ]); ?>
 

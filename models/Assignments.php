@@ -78,4 +78,14 @@ class Assignments extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Submissions::class, ['ASSIGNMENT_ID' => 'ASSIGNMENT_ID']);
     }
+    /**
+     * Check if the assignment has been submitted by the current user.
+     * @return bool
+     */
+    public function isSubmitted()
+    {
+        return Submissions::find()
+            ->where(['ASSIGNMENT_ID' => $this->ASSIGNMENT_ID, 'USER_ID' => Yii::$app->user->id])
+            ->exists();
+    }
 }
