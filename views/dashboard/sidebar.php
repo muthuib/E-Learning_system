@@ -95,7 +95,7 @@ $currentUrl = Yii::$app->request->url;
             </a>
         </li><!-- End of lessons Nav -->
         <li class="nav-item">
-            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/submissions/submit']) ?>">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/submissions/index']) ?>">
                 <i class="bi bi-buildings"></i>
                 <span>Submissions</span>
             </a>
