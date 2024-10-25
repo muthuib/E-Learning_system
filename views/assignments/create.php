@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Assignments $model */
 
-$this->title = 'Create Assignments';
+$this->title = 'Add Assignments';
 ?>
 <div class="assignments-create">
 

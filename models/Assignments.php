@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 
+
 /**
  * This is the model class for table "assignments".
  *
@@ -34,7 +35,8 @@ class Assignments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['COURSE_ID'], 'integer'],
+            //[['COURSE_ID'], 'integer'],
+            [['COURSE_ID'], 'required', 'message' => 'Course Name cannot be blank.'], // Ensures COURSE_ID is mandatory
             [['TITLE'], 'required'],
             [['DESCRIPTION'], 'string'],
             [['DUE_DATE', 'CREATED_AT', 'UPDATED_AT'], 'safe'],
@@ -88,4 +90,6 @@ class Assignments extends \yii\db\ActiveRecord
             ->where(['ASSIGNMENT_ID' => $this->ASSIGNMENT_ID, 'USER_ID' => Yii::$app->user->id])
             ->exists();
     }
+
+    
 }
