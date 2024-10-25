@@ -38,6 +38,7 @@ class Courses extends \yii\db\ActiveRecord
     {
         return [
             [['COURSE_NAME'], 'required'],
+            [['COURSE_NAME'], 'unique', 'message' => 'This course already exists.'], // Ensure the course name is unique
             [['DESCRIPTION'], 'string'],
             [['INSTRUCTOR_ID'], 'integer'],
             [['CREATED_AT', 'UPDATED_AT'], 'safe'],

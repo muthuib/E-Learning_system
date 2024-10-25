@@ -83,6 +83,14 @@ $currentUrl = Yii::$app->request->url;
             </a>
         </li><!-- End of enrollments Nav -->
         <li class="nav-item">
+            <a class="nav-link collapsed"
+                href="<?= Yii::$app->urlManager->createUrl(['/enrollments/students-per-course']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Enrollments per Course</span>
+            </a>
+        </li><!-- End of Enrollments per Course Nav -->
+
+        <li class="nav-item">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/grades/index']) ?>">
                 <i class="bi bi-buildings"></i>
                 <span>Grades</span>
