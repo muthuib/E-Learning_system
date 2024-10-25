@@ -2,11 +2,12 @@
 
 namespace app\controllers;
 
-use app\models\Assignments;
-use app\models\search\AssignmentsSearch;
+use Yii;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use app\models\Assignments;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use app\models\search\AssignmentsSearch;
 
 /**
  * AssignmentsController implements the CRUD actions for Assignments model.
@@ -71,7 +72,8 @@ class AssignmentsController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]);
+                Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Assigment Added successfully.');
+                return $this->redirect(['index', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]);
             }
         } else {
             $model->loadDefaultValues();
@@ -94,7 +96,8 @@ class AssignmentsController extends Controller
         $model = $this->findModel($ASSIGNMENT_ID);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]);
+            Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Assignment updated successfully.');
+            return $this->redirect(['index', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID]);
         }
 
         return $this->render('update', [
@@ -112,7 +115,7 @@ class AssignmentsController extends Controller
     public function actionDelete($ASSIGNMENT_ID)
     {
         $this->findModel($ASSIGNMENT_ID)->delete();
-
+        Yii::$app->session->setFlash('danger', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Assignment deleted successfully.');
         return $this->redirect(['index']);
     }
 

@@ -1,7 +1,9 @@
 <?php
 
+use app\models\Courses;
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /** @var yii\web\View $this */
 /** @var app\models\Assignments $model */
@@ -12,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'COURSE_ID')->textInput() ?>
+    <?= $form->field($model, 'COURSE_ID')->dropDownList(ArrayHelper::map(Courses::find()->all(), 'COURSE_ID', 'COURSE_NAME'), ['prompt' => 'Select Course']) ?>
 
     <?= $form->field($model, 'TITLE')->textInput(['maxlength' => true]) ?>
 
@@ -20,14 +22,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'DUE_DATE')->textInput() ?>
 
-    <?= $form->field($model, 'CREATED_AT')->textInput() ?>
-
-    <?= $form->field($model, 'UPDATED_AT')->textInput() ?>
-
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(
+            $model->isNewRecord ? 'Add Assignment' : 'Update Assignment',
+            ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']
+        ) ?>
+        <!-- Back button -->
+        <?= Html::a('Back', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
-
     <?php ActiveForm::end(); ?>
 
 </div>

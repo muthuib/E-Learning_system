@@ -62,6 +62,8 @@ $this->title = 'Lessons';
                         <?php elseif (Yii::$app->user->can('student')): ?>
                         <a href="<?= Url::to(['view', 'LESSON_ID' => $model->LESSON_ID]) ?>"
                             class="btn btn-info">View</a>
+                        <a href="<?= Url::to(['assignments/index', 'LESSON_ID' => $model->LESSON_ID]) ?>"
+                            class="btn btn-info">Assigments available</a>
                         <?php endif; ?>
                     </div>
                 </div>

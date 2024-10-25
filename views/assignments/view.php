@@ -6,9 +6,6 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Assignments $model */
 
-$this->title = $model->TITLE;
-$this->params['breadcrumbs'][] = ['label' => 'Assignments', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="assignments-view">
@@ -29,8 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'ASSIGNMENT_ID',
-            'COURSE_ID',
+            [
+                'attribute' => 'COURSE_ID',
+                'label' => 'Course Name',
+                'value' => function ($model) {
+                    return $model->cOURSE ? $model->cOURSE->COURSE_NAME : 'N/A'; // Display course name or N/A if not found
+                },
+            ],
             'TITLE',
             'DESCRIPTION:ntext',
             'DUE_DATE',

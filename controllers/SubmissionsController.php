@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
-use app\models\Submissions;
-use app\models\search\SubmissionsSearch;
+use Yii;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
+use app\models\Assignments;
+use app\models\Submissions;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use app\models\search\SubmissionsSearch;
 
 /**
  * SubmissionsController implements the CRUD actions for Submissions model.
@@ -131,4 +133,47 @@ class SubmissionsController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    ///function to submit an assignment
+    //makes sure that both Assignments and Submissions models are loaded and passed to the view
+    public function actionSubmit($id)
+    {
+        // Load the assignment model based on the provided assignment ID
+        $assignmentModel = Assignments::findOne($id);
+        if (!$assignmentModel) {
+            throw new NotFoundHttpException('The requested assignment does not exist.');
+        }
+
+        // Create a new submission model
+        $submissionModel = new Submissions();
+
+        // Handle form submission
+        if ($submissionModel->load(Yii::$app->request->post())) {
+            $submissionModel->ASSIGNMENT_ID = $assignmentModel->ASSIGNMENT_ID; // Link to the assignment
+            $submissionModel->USER_ID = Yii::$app->user->id; // Current user ID
+            $submissionModel->SUBMITTED_AT = date('Y-m-d H:i:s'); // Submission time
+
+            // Handle file upload
+            // $file = UploadedFile::getInstance($submissionModel, 'FILE_URL');
+            // if ($file) {
+            //     $filePath = 'uploads/' . $file->baseName . '.' . $file->extension;
+            //     if ($file->saveAs($filePath)) {
+            //         $submissionModel->FILE_URL = $filePath;
+            //     }
+            // }
+
+            // Save the submission to the database
+            if ($submissionModel->save()) {
+                Yii::$app->session->setFlash('success', 'Assignment submitted successfully!');
+                return $this->redirect(['index']);
+            }
+        }
+
+        // Render the form view with assignment and submission models
+        return $this->render('submit', [
+            'assignmentModel' => $assignmentModel,
+            'submissionModel' => $submissionModel,
+        ]);
+    }
+
 }

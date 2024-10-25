@@ -36,6 +36,7 @@ class Submissions extends \yii\db\ActiveRecord
             [['ASSIGNMENT_ID', 'USER_ID'], 'integer'],
             [['SUBMITTED_AT'], 'safe'],
             [['FILE_URL'], 'string', 'max' => 255],
+             [['CONTENT'], 'string'],
             [['ASSIGNMENT_ID'], 'exist', 'skipOnError' => true, 'targetClass' => Assignments::class, 'targetAttribute' => ['ASSIGNMENT_ID' => 'ASSIGNMENT_ID']],
             [['USER_ID'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['USER_ID' => 'ID']],
         ];
@@ -51,13 +52,14 @@ class Submissions extends \yii\db\ActiveRecord
             'ASSIGNMENT_ID' => 'Assignment ID',
             'USER_ID' => 'User ID',
             'FILE_URL' => 'File Url',
+            'CONTENT' => 'Text Answer',
             'SUBMITTED_AT' => 'Submitted At',
         ];
     }
 
     /**
      * Gets query for [[ASSIGNMENT]].
-     *
+     *relation to Assignments so that you can access assignment data easily.
      * @return \yii\db\ActiveQuery
      */
     public function getASSIGNMENT()

@@ -16,27 +16,36 @@ $this->title = 'Submissions';
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Submissions', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <!-- Check if the user is an instructor or admin to assign create privillage-->
+    <div class="text-end mb-3">
+        <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
+        <?= Html::a('Add Submission', ['submissions/create'], ['class' => 'btn btn-primary']) ?>
+        <?php endif; ?>
+    </div>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'SUBMISSION_ID',
-            'ASSIGNMENT_ID',
+            [
+                'attribute' => 'ASSIGNMENT_ID',
+                'label' => 'Assignment Title',
+                'value' => function ($model) {
+                    return $model->aSSIGNMENT? $model->aSSIGNMENT->TITLE : 'N/A';
+                }
+            ],
             'USER_ID',
+            'CONTENT',
             'FILE_URL:url',
             'SUBMITTED_AT',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Submissions $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'SUBMISSION_ID' => $model->SUBMISSION_ID]);
-                 }
+                }
             ],
         ],
     ]); ?>

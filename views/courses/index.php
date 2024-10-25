@@ -2,6 +2,7 @@
 
 use app\models\Courses;
 use app\models\Enrollments; // Import the Enrollments model
+use app\models\Lessons; // Import the Lessons model to check for lessons
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -13,7 +14,7 @@ $this->title = 'Courses';
 <div class="courses-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
+    <!-- Check if the user is an instructor or admin to assign create privillage-->
     <div class="text-end mb-3">
         <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
         <?= Html::a('Enroll a Course', ['enrollments/create'], ['class' => 'btn btn-primary']) ?>
@@ -36,6 +37,27 @@ $this->title = 'Courses';
                         <?= $model->iNSTRUCTOR ? Html::encode($model->iNSTRUCTOR->EMAIL) : 'N/A' ?>
                     </p>
                     <div class="d-flex justify-content-between">
+                        <?php
+                            // Check if the logged-in user is enrolled in the course
+                            $isEnrolled = Enrollments::find()->where(['USER_ID' => Yii::$app->user->id, 'COURSE_ID' => $model->COURSE_ID])->exists();
+
+                            // Check if the course has any lessons
+                            $hasLessons = Lessons::find()->where(['COURSE_ID' => $model->COURSE_ID])->exists();
+                            ?>
+
+                        <?php if ($isEnrolled): ?> <span class='btn btn-info btn-block'>Enrolled</span>
+                        <!-- Indicate enrollment -->
+
+                        <?php if ($hasLessons): ?>
+                        <?= Html::a('Continue with Classes', ['lessons/index', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn btn-dark btn-block']) ?>
+                        <?php else: ?>
+                        <span class='btn btn-secondary btn-block'>No Lessons Available</span>
+                        <?php endif; ?>
+                        <?php else: ?>
+                        <?= Html::a('Enroll', ['enrollments/create', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn btn-success btn-block']) ?>
+                        <?php endif; ?>
+                    </div> <br>
+                    <div class="d-flex justify-content-between">
                         <!-- Conditional display of Update and Delete buttons to only admins and instructors -->
                         <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
                         <a href="<?= Url::to(['update', 'COURSE_ID' => $model->COURSE_ID]) ?>"
@@ -47,19 +69,6 @@ $this->title = 'Courses';
                                         'method' => 'post',
                                     ],
                                 ]) ?>
-                        <?php endif; ?>
-
-                        <?php
-                            // Check if the logged-in user is enrolled in the course
-                            $isEnrolled = Enrollments::find()->where(['USER_ID' => Yii::$app->user->id, 'COURSE_ID' => $model->COURSE_ID])->exists();
-                            ?>
-
-                        <?php if ($isEnrolled): ?>
-                        <span class='btn btn-info btn-block'>Enrolled</span> <!-- Indicate enrollment -->
-                        <?= Html::a('Continue with Classes', ['lessons/index', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn
-                        btn-dark btn-block']) ?>
-                        <?php else: ?>
-                        <?= Html::a('Enroll', ['enrollments/create', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn btn-success btn-block']) ?>
                         <?php endif; ?>
                     </div>
                 </div>
