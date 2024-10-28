@@ -5,10 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Grades $model */
 
-$this->title = 'Update Grades: ' . $model->GRADE_ID;
-$this->params['breadcrumbs'][] = ['label' => 'Grades', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->GRADE_ID, 'url' => ['view', 'GRADE_ID' => $model->GRADE_ID]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Update Grade';
 ?>
 <div class="grades-update">
 

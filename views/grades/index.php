@@ -20,25 +20,36 @@ $this->title = 'Grades';
         <?= Html::a('Create Grades', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); 
+    ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'GRADE_ID',
-            'SUBMISSION_ID',
+            // Fetch SUBMISSION_ID details
+            [
+                'attribute' => 'SUBMISSION_ID',
+                'value' => function ($model) {
+                    // Display the SUBMISSION_ID or other information from the Submissions table
+                    return $model->sUBMISSION ? $model->sUBMISSION->SUBMISSION_ID : 'N/A';
+                },
+                'label' => 'Submission ID'
+            ],
+
             'GRADE',
             'GRADED_AT',
+
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Grades $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'GRADE_ID' => $model->GRADE_ID]);
-                 }
+                }
             ],
         ],
     ]); ?>
+
 
 
 </div>
