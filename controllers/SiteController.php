@@ -21,7 +21,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 use app\models\PasswordResetRequestForm;
 use GuzzleHttp\Exception\RequestException;
-use Mpdf\Mpdf;  // Correct way to import mPDF class
+
 
 class SiteController extends Controller
 {
@@ -123,8 +123,7 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
-
-    /**
+       /**
      * Logout action.
      *
      * @return Response
@@ -309,35 +308,23 @@ class SiteController extends Controller
         return $responseBody['access_token'];
     }
 
-    // //Email confirmation
-    public function actionConfirm($token)
+    //EMAIL VERIFICATION METHOD
+    public function actionVerifyEmail($token)
     {
-        $user = User::findOne(['VERIFICATION_TOKEN' => $token]);
-
-        if (!$user) {
-            // Token is invalid or does not exist
-            Yii::$app->session->setFlash('error', 'The link has been used, Invalid or expired.');
-            return $this->redirect(['site/login']);
+        $user = User::findOne(['VERIFICATION_TOKEN' => $token]); // Use uppercase column name
+        if ($user) {
+            $user->STATUS = 10; // Update user status (make sure this column exists and is properly defined)
+            $user->VERIFICATION_TOKEN = null; // Clear the verification token
+            if ($user->save(false)) { // Save without validation
+                Yii::$app->session->setFlash('success', 'Your email has been verified. You can now log in.');
+                return $this->redirect(['site/login']);
+            }
         }
-
-        // Check if the user is already active (the token has already been used)
-        if ($user->STATUS == 10) {
-            Yii::$app->session->setFlash('error', 'This account has already been verified.');
-            return $this->redirect(['site/login']);
-        }
-
-        // Mark user as active and clear the verification token
-        $user->STATUS = 10;  // User is now active
-        $user->VERIFICATION_TOKEN = null;  // Clear the token
-
-        if ($user->save()) {
-            Yii::$app->session->setFlash('success', 'Your account has been verified.');
-        } else {
-            Yii::$app->session->setFlash('error', 'There was a problem verifying your account. Please try again.');
-        }
-
+        Yii::$app->session->setFlash('error', 'Invalid verification link or user not found.');
         return $this->redirect(['site/login']);
     }
+
+
 
     // Request password reset
     public function actionRequestPasswordReset()
