@@ -248,20 +248,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->PASSWORD_RESET_TOKEN = null;
     }
-    // send confirmation email
-    public function sendConfirmationEmail($user)
-    {
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailConfirm-html', 'text' => 'emailConfirm-text'],
-                ['user' => $user]
-            )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name])
-            ->setTo($user->EMAIL)
-            ->setSubject('Email confirmation for ' . Yii::$app->name)
-            ->send();
-    }
 
 //relation method to define the relationship with the auth_assignment table:
 //you need to create model AuthAssignments

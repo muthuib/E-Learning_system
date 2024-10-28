@@ -40,24 +40,38 @@ $config = [
             'class' => 'yii\rbac\DbManager',
         ],
 
-        //configure mailer
+        // //configure mailer
 
-        'mailer' => [
-            'class' => \yii\swiftmailer\Mailer::class,
-            'viewPath' => '@app/mail',
-            // send all mails to a file by default.
-            'useFileTransport' => false,
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.gmail.com',
-                'username' => 'benmuthui98@gmail.com',
-                'password' => 'wzlp bfwf scgl yide',
-                'port' => '587',
-                'encryption' => 'tls',
-                // 'dsn' => 'smtp://da2d41ab63aca8:295c3faee178ab@mailtrap.io:2525'
-            ],
-        ],
-        
+        // 'mailer' => [
+        //     'class' => \yii\swiftmailer\Mailer::class,
+        //     'viewPath' => '@app/mail',
+        //     // send all mails to a file by default.
+        //     'useFileTransport' => false,
+        //     'transport' => [
+        //         'class' => 'Swift_SmtpTransport',
+        //         'host' => 'smtp.gmail.com',
+        //         'username' => 'benmuthui98@gmail.com',
+        //         'password' => 'wzlp bfwf scgl yide',
+        //         'port' => '587',
+        //         'encryption' => 'tls',
+        //         // 'dsn' => 'smtp://da2d41ab63aca8:295c3faee178ab@mailtrap.io:2525'
+        //     ],
+        // ],
+        // 'mailer' => [
+        //     'class' => 'yii\swiftmailer\Mailer', // This will remain for Yii mailer compatibility
+        //     'useFileTransport' => false, // Set to true if you want to save emails as files
+        //     'viewPath' => '@app/mail',
+        //     'transport' => [
+        //         'class' => 'Swift_SmtpTransport',
+        //         'host' => 'smtp.gmail.com',
+        //         'username' => 'benmuthui98@gmail.com',
+        //         'password' => 'wzlp bfwf scgl yide', // Use an app password if 2FA is enabled
+        //         'port' => '587',
+        //         'encryption' => 'tls',
+        //     ],
+        // ],
+     
+
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
