@@ -36,12 +36,13 @@ $this->title = 'Students Per Course';
                 <td><?= Html::encode($course->DESCRIPTION) ?></td>
                 <td>
                     <?php if (!empty($course->enrollments)): ?>
-                    <ul>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <!-- Remove default list styling -->
                         <?php
                                 $studentNumber = 1; // Initialize the student counter
                                 foreach ($course->enrollments as $enrollment): ?>
                         <li>
-                            <?= $studentNumber . ' ' . Html::encode($enrollment->uSER->EMAIL) ?>
+                            <?= $studentNumber . '. ' . Html::encode($enrollment->uSER->EMAIL) ?>
                             <strong>(Enrolled At: <?= Html::encode($enrollment->ENROLLED_AT) ?>)</strong>
                         </li>
                         <?php
