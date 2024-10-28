@@ -12,7 +12,7 @@ $this->title = 'Signup';
     <p class="animate__animated animate__fadeIn">Please fill out the following fields to Register:</p>
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-7">
             <div class="card animate__animated animate__zoomIn">
                 <div class="card-body">
                     <?php $form = ActiveForm::begin([
@@ -24,11 +24,11 @@ $this->title = 'Signup';
                             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
                         ],
                     ]); ?>
-
-                    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
-
+                    <?= $form->field($model, 'first_name')->textInput(['autofocus' => true]) ?>
+                    <?= $form->field($model, 'last_name')->textInput() ?>
+                    <?= $form->field($model, 'email')->textInput() ?>
+                    <?= $form->field($model, 'phone_number')->textInput() ?>
                     <?= $form->field($model, 'password')->passwordInput() ?>
-
                     <?= $form->field($model, 'password_repeat')->passwordInput() ?>
 
                     <div class="form-group">
@@ -36,7 +36,7 @@ $this->title = 'Signup';
                             <?= Html::submitButton('Register', [
                                 'class' => 'btn btn-primary signup-btn animate__animated animate__pulse',
                                 'name' => 'signup-button',
-                                'style' => 'width: 380px;',
+                                'style' => 'width: 560px;',
                             ]) ?>
                         </div>
                     </div>
