@@ -51,7 +51,8 @@ use yii\helpers\Html;
                 <!-- Implementing dropdown with avator-->
                 <?php
                     $user = [
-                        'name' => Yii::$app->user->identity->EMAIL, // Assuming the email is the username
+                        'name' => Yii::$app->user->identity->FIRST_NAME . ' ' . Yii::$app->user->identity->LAST_NAME, // CONCATENATING both names
+
                         'avatar' => 'https://via.placeholder.com/150', // Replace with the actual avatar URL
                     ];
                     ?>

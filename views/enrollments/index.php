@@ -11,10 +11,11 @@ $this->title = 'Enrollments';
 <div class="enrollments-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
     <div class="text-end">
         <p>
-            <?= Html::a('Enroll Course', ['courses/index'], ['class' => 'btn btn-primary']) ?>
+            <!-- Back button -->
+            <?= Html::a('Back to Courses', ['courses/index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Enroll Course', ['courses/index'], ['class' => 'btn btn-success']) ?>
         </p>
     </div>
 
@@ -28,7 +29,8 @@ $this->title = 'Enrollments';
                         <?= Html::encode($model->cOURSE ? $model->cOURSE->COURSE_NAME : 'Course Not Found') ?>
                     </h5>
                     <p class="card-text">
-                        <?= Html::encode($model->uSER ? $model->uSER->EMAIL : 'User Not Found') ?><br>
+                        <?= Html::encode($model->uSER ? $model->uSER->FIRST_NAME . ' ' . $model->uSER->LAST_NAME : 'User Not Found') ?><br>
+
                         <strong>Enrolled At:</strong> <?= Html::encode($model->ENROLLED_AT) ?>
                     </p>
                     <div class="d-flex justify-content-between">

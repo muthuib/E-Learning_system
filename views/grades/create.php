@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Grades $model */
 
-$this->title = 'Create Grades';
+$this->title = 'Add Grade';
 ?>
 <div class="grades-create">
 

@@ -34,7 +34,8 @@ $this->title = 'Courses';
                     <p class="card-text"><?= Html::encode($model->DESCRIPTION) ?></p>
                     <p class="card-text">
                         <strong>Instructor:</strong>
-                        <?= $model->iNSTRUCTOR ? Html::encode($model->iNSTRUCTOR->EMAIL) : 'N/A' ?>
+                        <?= $model->iNSTRUCTOR ? Html::encode($model->iNSTRUCTOR->FIRST_NAME . ' ' . $model->iNSTRUCTOR->LAST_NAME) : 'N/A' ?>
+
                     </p>
                     <div class="d-flex justify-content-between">
                         <?php

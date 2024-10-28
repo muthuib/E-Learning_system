@@ -45,7 +45,7 @@ class Grades extends \yii\db\ActiveRecord
     {
         return [
             'GRADE_ID' => 'Grade ID',
-            'SUBMISSION_ID' => 'Submission ID',
+            'SUBMISSION_ID' => '',
             'GRADE' => 'Grade',
             'GRADED_AT' => 'Graded At',
         ];
