@@ -78,24 +78,40 @@ class GradesController extends Controller
      *
      * @return string
      */
+    
     public function actionSaveMultiple()
     {
         if (Yii::$app->request->post('Grades')) {
             $gradesData = Yii::$app->request->post('Grades');
+            $errors = []; // Array to hold validation errors
 
             foreach ($gradesData as $gradeData) {
                 $grade = new Grades();
                 $grade->SUBMISSION_ID = $gradeData['SUBMISSION_ID'];
                 $grade->GRADE = $gradeData['GRADE'];
                 $grade->GRADED_AT = date('Y-m-d H:i:s');
-                $grade->save();
+
+                // Validate the grade
+                if (!$grade->validate()) {
+                    $errors[] = $grade->getErrors(); // Collect validation errors
+                } else {
+                    $grade->save(); // Only save if there are no errors
+                }
             }
 
-            Yii::$app->session->setFlash('success', 'Grades Added successfully.');
+            if (!empty($errors)) {
+                Yii::$app->session->setFlash('error', 'Please correct the errors in the form.');
+                // You might want to redirect back to the form and pass the errors
+                return $this->redirect(['grades/multi-grade-form', 'errors' => $errors]);
+            }
+
+            Yii::$app->session->setFlash('success', 'Grades added successfully.');
             return $this->redirect(['grades/index']);
         }
+
         return $this->redirect(['grades/multi-grade-form']);
     }
+
     /**
      *  updates and saves muiltple grades.
      *
