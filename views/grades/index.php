@@ -20,6 +20,7 @@ $this->title = 'Grades';
 
     <div class="text-end mb-3">
         <?= Html::a('Add Multiple Grades', ['grades/multi-grade-form'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('update Multiple Grades', ['grades/multi-update-form'], ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php Pjax::begin(); // Enable Pjax for automatic AJAX reloading 
@@ -27,6 +28,8 @@ $this->title = 'Grades';
 
     <!-- Form to handle delete action for selected items -->
     <?= Html::beginForm(['grades/delete-multiple'], 'post', ['id' => 'multiple-delete-form']); ?>
+    <!-- Form to handle update action for selected items -->
+    <?= Html::beginForm(['grades/update-multiple'], 'post', ['id' => 'multi-update-form']); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

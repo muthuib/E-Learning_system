@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use app\models\search\GradesSearch;
+use yii\web\BadRequestHttpException;
 
 /**
  * GradesController implements the CRUD actions for Grades model.
@@ -48,7 +49,7 @@ class GradesController extends Controller
         ]);
     }
     /**
-     * Lists all submissions to allow muiltiple grades.
+     * Lists all submissions to allow adding of muiltiple grades.
      *
      * @return string
      */
@@ -59,7 +60,19 @@ class GradesController extends Controller
             'model' => $model,
         ]);
     }
-
+    /**
+     * Lists all submissions to allow update of muiltiple grades.
+     *
+     * @return string
+     */
+    public function actionMultiUpdateForm()
+    {
+        $model = new Grades(); // Initialize model if needed
+        return $this->render('multi-update-form', [
+            'model' => $model,
+        ]);
+    }
+    
     /**
      *  adds and saves muiltple grades.
      *
@@ -78,11 +91,58 @@ class GradesController extends Controller
                 $grade->save();
             }
 
-            Yii::$app->session->setFlash('success', 'Grades saved successfully.');
-            return $this->redirect(['submissions/index']);
+            Yii::$app->session->setFlash('success', 'Grades Added successfully.');
+            return $this->redirect(['grades/index']);
         }
         return $this->redirect(['grades/multi-grade-form']);
     }
+    /**
+     *  updates and saves muiltple grades.
+     *
+     * @return string
+     */  
+    public function actionUpdateMultiple()
+    {
+        if (Yii::$app->request->isPost) {
+            $gradesData = Yii::$app->request->post('Grades');
+
+            // Check if gradesData is an array
+            if (is_array($gradesData)) {
+                foreach ($gradesData as $submissionId => $gradeData) {
+                    try {
+                        $grade = Grades::findOne(['SUBMISSION_ID' => $submissionId]);
+                        if ($grade) {
+                            $grade->GRADE = $gradeData['GRADE'];
+                            if (!$grade->save()) {
+                                throw new \Exception('Failed to save grade for Submission ID: ' . $submissionId);
+                            }
+                        } else {
+                            throw new NotFoundHttpException('Grade not found for Submission ID: ' . $submissionId);
+                        }
+                    } catch (\Exception $e) {
+                        Yii::error("Error updating grades: " . $e->getMessage(), __METHOD__);
+                        // Optionally, you can set a flash message for user feedback
+                        // Yii::$app->session->setFlash('error', 'Error updating grades: ' . $e->getMessage());
+                    }
+                }
+            } else {
+                // Handle the case where gradesData is not an array
+                Yii::error('Grades data is not an array', __METHOD__);
+                Yii::$app->session->setFlash('error', 'No grades added or Invalid grades data received.');
+                return $this->redirect(['grades/index']);
+            }  
+                // Redirect or render a success message
+                Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Grades Updated successfully.');
+                return $this->redirect(['grades/index']);
+            
+
+           
+        }
+
+        throw new BadRequestHttpException('Invalid request method');
+    }
+
+
     /**
      *  selects and deletes muiltple grades.
      *
@@ -99,32 +159,7 @@ class GradesController extends Controller
         }
         return $this->redirect(['grades/index']);
     }
-    /**
-     *  selects and edits muiltple grades.
-     *
-     * @return string
-     */
-    public function actionEditMultiple($ids)
-    {
-        $gradeIds = explode(',', $ids);
-        $grades = Grades::findAll(['GRADE_ID' => $gradeIds]);
-
-        if (Yii::$app->request->isPost) {
-            $postData = Yii::$app->request->post('Grades');
-            foreach ($grades as $grade) {
-                $grade->GRADE = $postData[$grade->GRADE_ID]['GRADE'];
-                $grade->save();
-            }
-            Yii::$app->session->setFlash('success', 'Grades have been updated.');
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('edit-multiple', [
-            'grades' => $grades,
-        ]);
-    }
-
-
+    
     /**
      * Displays a single Grades model.
      * @param int $GRADE_ID Grade ID
