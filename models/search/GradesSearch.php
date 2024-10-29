@@ -48,6 +48,17 @@ class GradesSearch extends Grades
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        ////sort the GridView by SUBMISSION_ID
+        //Now, the GridView should display the grades sorted by SUBMISSION_ID by default, 
+        //and users can click on the column header to sort in ascending or descending order if desired.
+        $query = Grades::find();
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['SUBMISSION_ID' => SORT_ASC],
+            ],
+        ]);
 
         $this->load($params);
 
