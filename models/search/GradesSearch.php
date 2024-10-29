@@ -41,23 +41,34 @@ class GradesSearch extends Grades
      */
     public function search($params)
     {
+        // Define the query
         $query = Grades::find();
 
-        // add conditions that should always apply here
-
+        // Configure the data provider with pagination and sorting options
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10, // Number of items per page
+            ],
+            'sort' => [
+                'defaultOrder' => ['SUBMISSION_ID' => SORT_ASC], // Default sorting order
+                'attributes' => [
+                    'SUBMISSION_ID',
+                    'GRADE',
+                    'GRADED_AT'
+                ]
+            ],
         ]);
 
+        // Load and validate search parameters
         $this->load($params);
-
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            // Return an empty data provider when validation fails
+            $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
+        // Filtering conditions
         $query->andFilterWhere([
             'GRADE_ID' => $this->GRADE_ID,
             'SUBMISSION_ID' => $this->SUBMISSION_ID,
@@ -67,4 +78,5 @@ class GradesSearch extends Grades
 
         return $dataProvider;
     }
+    
 }

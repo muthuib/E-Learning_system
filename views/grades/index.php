@@ -20,21 +20,18 @@ $this->title = 'Grades';
 
     <div class="text-end mb-3">
         <?= Html::a('Add Multiple Grades', ['grades/multi-grade-form'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('update Multiple Grades', ['grades/multi-update-form'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Update Multiple Grades', ['grades/multi-update-form'], ['class' => 'btn btn-primary']) ?>
     </div>
 
-    <?php Pjax::begin(); // Enable Pjax for automatic AJAX reloading 
-    ?>
+    <?php Pjax::begin(); ?>
 
-    <!-- Form to handle delete action for selected items -->
     <?= Html::beginForm(['grades/delete-multiple'], 'post', ['id' => 'multiple-delete-form']); ?>
-    <!-- Form to handle update action for selected items -->
     <?= Html::beginForm(['grades/update-multiple'], 'post', ['id' => 'multi-update-form']); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'yii\grid\SerialColumn'], // Automatically numbered column
 
             // Display student name associated with submission
             [
@@ -78,13 +75,10 @@ $this->title = 'Grades';
     ]); ?>
 
     <?= Html::endForm(); ?>
-    <!-- End of delete form -->
-
     <?php Pjax::end(); ?>
 </div>
 
 <?php
-// JavaScript for "Select All" functionality
 $js = <<<JS
 // Handle "Select All" functionality
 $('.select-all').on('click', function () {
