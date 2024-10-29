@@ -29,6 +29,7 @@ $this->title = 'Update Multiple Grades'; // Title of the form
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>#</th> <!-- Index column header -->
                 <th>Student Name</th>
                 <th>Assignment Title</th>
                 <th>Current Grade</th>
@@ -36,30 +37,36 @@ $this->title = 'Update Multiple Grades'; // Title of the form
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($submissionsWithGrades as $submission) : ?>
+            <?php foreach ($submissionsWithGrades as $index => $submission) : ?>
             <tr>
+                <td><?= $index + 1 ?></td> <!-- Display the index (starting from 1) -->
                 <td><?= Html::encode($submission->uSER->FIRST_NAME . ' ' . $submission->uSER->LAST_NAME) ?></td>
                 <td><?= Html::encode($submission->aSSIGNMENT->TITLE) ?></td>
                 <!-- Display current grade -->
                 <td>
                     <?php
-                            // Fetch the grade using the SUBMISSION_ID
-                            $grade = Grades::find()->where(['SUBMISSION_ID' => $submission->SUBMISSION_ID])->one();
-                            if ($grade) {
-                                // Display the grade with custom styling
-                                echo Html::tag('span', Html::encode($grade->GRADE), ['style' => 'color: darkblue; font-weight: bold;']);
+                            $grades = $submission->grades;
+                            if ($grades && is_array($grades)) {
+                                foreach ($grades as $grade) {
+                                    echo Html::tag('span', Html::encode($grade->GRADE), ['style' => 'color: darkblue; font-weight: bold;']);
+                                    echo '<br>'; // Line break for readability
+                                }
                             } else {
                                 echo 'N/A'; // If no grade found
                             }
                             ?>
                 </td>
-
                 <td>
                     <?= Html::hiddenInput("Grades[{$submission->SUBMISSION_ID}][SUBMISSION_ID]", $submission->SUBMISSION_ID) ?>
-                    <?= Html::input('text', "Grades[{$submission->SUBMISSION_ID}][GRADE]", $submission->gRADes->GRADE ?? '', [
+                    <?= $form->field($grade ?: new Grades(), "[$submission->SUBMISSION_ID]GRADE", [
+                                'options' => ['class' => 'form-group'],
+                            ])->textInput([
                                 'class' => 'form-control',
-                                'placeholder' => 'Edit grade'
-                            ]) ?>
+                                'placeholder' => 'Edit grade',
+                                'type' => 'number', // Set type to number
+                                'step' => 'any', // Allows decimal values
+                                'min' => 0, // Optional: minimum value
+                            ])->label(false)->error(['class' => 'text-danger']); ?>
                 </td>
             </tr>
             <?php endforeach; ?>

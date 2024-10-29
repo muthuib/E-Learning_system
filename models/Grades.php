@@ -32,7 +32,7 @@ class Grades extends \yii\db\ActiveRecord
         return [
             [['SUBMISSION_ID'], 'integer'],
             [['GRADE'], 'required'],
-            [['GRADE'], 'number'],
+            [['GRADE'], 'number', 'message' => 'Grade must be a valid number.'], // Validate that GRADE is a number
             [['GRADED_AT'], 'safe'],
             [['SUBMISSION_ID'], 'exist', 'skipOnError' => true, 'targetClass' => Submissions::class, 'targetAttribute' => ['SUBMISSION_ID' => 'SUBMISSION_ID']],
         ];
