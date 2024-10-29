@@ -1235,3 +1235,29 @@ p{
   font-size: 13px;
   color: #012970;
 }
+
+/* PAGINATION STYLING */
+    /* Style each pagination link */
+    .pagination li a, .pagination li span {
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 0 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        color: #0f2dd8;
+        text-decoration: none;
+    }
+
+    /* Active page styling */
+    .pagination .active span {
+        background-color: #007bff; /* Primary color */
+        color: white;
+        border-color: #007bff;
+    }
+
+    /* Hover effect for pagination links */
+    .pagination li a:hover {
+        background-color: #f0f0f0;
+        border-color: #ccc;
+    }
+
