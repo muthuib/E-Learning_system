@@ -59,5 +59,6 @@ class Grades extends \yii\db\ActiveRecord
     public function getSUBMISSION()
     {
         return $this->hasOne(Submissions::class, ['SUBMISSION_ID' => 'SUBMISSION_ID']);
-    }
+}
+    
 }

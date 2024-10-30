@@ -39,20 +39,6 @@ class SubmissionsController extends Controller
      *
      * @return string
      */
-    // public function actionIndex()
-    // {
-    //     $searchModel = new SubmissionsSearch();
-    //     $dataProvider = $searchModel->search($this->request->queryParams);
-    //     // Check if the user is a student
-    //     if (Yii::$app->user->can('student')) {
-    //         // Filter data to show only submissions made by the current user
-    //         $dataProvider->query->andWhere(['USER_ID' => Yii::$app->user->id]);
-    //     }
-    //     return $this->render('index', [
-    //         'searchModel' => $searchModel,
-    //         'dataProvider' => $dataProvider,
-    //     ]);
-    // }
     public function actionIndex($assignmentId = null)
     {
         $searchModel = new SubmissionsSearch();
