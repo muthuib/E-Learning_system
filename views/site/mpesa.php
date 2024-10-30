@@ -2,7 +2,7 @@
 // views/site/mpesa.php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 
 $this->title = 'M-Pesa Payment';
 ?>
@@ -13,12 +13,12 @@ $this->title = 'M-Pesa Payment';
 
     <?php $form = ActiveForm::begin(); ?>
 
-        <?= $form->field($model, 'phoneNumber')->textInput(['maxlength' => true]) ?>
-        <?= $form->field($model, 'amount')->textInput() ?>
+    <?= $form->field($model, 'phoneNumber')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'amount')->textInput() ?>
 
-        <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-        </div>
+    <div class="form-group">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+    </div>
 
     <?php ActiveForm::end(); ?>
 </div>
