@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\rbac\Item;
-use yii\web\Controller;
+use app\web\Controller;
 use app\models\AssignRoleForm;
 use app\models\AssignPermissionForm;
 use yii\filters\AccessControl;
