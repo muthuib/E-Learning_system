@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\User;
-use yii\web\Controller;
+use app\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;

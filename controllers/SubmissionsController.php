@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\Controller;
+use app\web\Controller;
 use app\models\Assignments;
 use app\models\Submissions;
 use yii\filters\VerbFilter;

@@ -6,7 +6,7 @@ use Yii;
 use app\models\User;
 use yii\web\Response;
 use GuzzleHttp\Client;
-use yii\web\Controller;
+use app\web\Controller;
 use app\models\FormData;
 use app\models\LoginForm;
 use app\models\MpesaForm;

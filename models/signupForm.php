@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
+
 /**
  * classSignupForm
  * 
@@ -51,6 +52,7 @@ class SignupForm extends Model
             $this->addError($attribute, 'This email address is already registered.');
         }
     }
+   
     public function signup()
     {
         $user = new User();
@@ -61,18 +63,58 @@ class SignupForm extends Model
         $user->PASSWORD = yii::$app->security->generatePasswordHash($this->password);
         $user->ACCESS_TOKEN = yii::$app->security->generateRandomString();
         $user->AUTH_KEY = yii::$app->security->generateRandomString();
-        //generate confirmation token during sign up
+
+        // Generate confirmation token during sign up
         $user->generateEmailVerificationToken();
         $user->status = 9;  // User initially inactive
-        $user->save();
 
         if ($user->save()) {
-            $user->generateEmailVerificationToken();
-            $user->save();
-            $user->sendConfirmationEmail($user);
+            // Send confirmation email
+            if ($this->sendConfirmationEmail($user)) {
+                Yii::$app->session->setFlash('success', 'Please check your email to confirm your account.');
+            } else {
+                Yii::$app->session->setFlash('error', 'There was an error sending the confirmation email.');
+            }
 
-            Yii::$app->session->setFlash('success', 'Please check your email to confirm your account.');
             return Yii::$app->response->redirect(['site/index']);
+        } else {
+            Yii::$app->session->setFlash('error', 'There was an error during registration.');
+        }
+
+        return false; // Indicate failure if user save was unsuccessful
+    }
+
+    protected function sendConfirmationEmail($user)
+    {
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true); // Enable exceptions
+
+        try {
+            // SMTP configuration
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
+            $mail->SMTPAuth = true;
+            $mail->Username = 'benmuthui98@gmail.com'; // Your SMTP username
+            $mail->Password = 'wzlp bfwf scgl yide'; // Your SMTP password (App Password for Gmail)
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587; // TCP port to connect to
+
+            // Set email format to HTML
+            $mail->setFrom('info@roundtech.com', 'Roundtech Solutions');
+            $mail->addAddress($user->EMAIL, $user->FIRST_NAME); // Add a recipient
+
+            $mail->isHTML(true);
+            $mail->Subject = 'Email Verification';
+            $mail->Body = 'Hello ' . htmlspecialchars($user->FIRST_NAME) . ',<br><br>Click the link below to verify your email address:<br>' .
+            '<a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $user->VERIFICATION_TOKEN]) . '">Verify Email</a>';
+
+
+                
+            $mail->send();
+            return true;
+        } catch (\PHPMailer\PHPMailer\Exception $e) {
+            Yii::error("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+            return false;
         }
     }
-}
+
+    }

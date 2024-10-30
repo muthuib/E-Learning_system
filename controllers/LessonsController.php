@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Lessons;
-use yii\web\Controller;
+use app\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use app\models\search\LessonsSearch;

@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Courses;
-use yii\web\Controller;
+use app\web\Controller;
 use app\models\Enrollments;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -58,18 +58,6 @@ class EnrollmentsController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-
-    //public function actionIndex()
-    // {
-    //     $searchModel = new EnrollmentsSearch();
-    //     $dataProvider = $searchModel->search($this->request->queryParams);
-
-    //     return $this->render('index', [
-    //         'searchModel' => $searchModel,
-    //         'dataProvider' => $dataProvider,
-    //     ]);
-    // }
-
     /**
      * Displays a single Enrollments model.
      * @param int $ENROLLMENT_ID Enrollment ID

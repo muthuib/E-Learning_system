@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\models\Categories;
 use app\models\search\CategoriesSearch;
-use yii\web\Controller;
+use app\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 

@@ -32,6 +32,7 @@ $config = [
             'enableAutoLogin' => true,
             'loginUrl' => ['site/login'],
         ],
+        
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],

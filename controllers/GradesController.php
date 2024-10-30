@@ -4,12 +4,12 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Grades;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use app\models\search\GradesSearch;
 use yii\web\BadRequestHttpException;
+use app\web\Controller;
 
 /**
  * GradesController implements the CRUD actions for Grades model.
