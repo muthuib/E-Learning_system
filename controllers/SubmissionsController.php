@@ -7,6 +7,7 @@ use yii\web\Controller;
 use app\models\Assignments;
 use app\models\Submissions;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use app\models\search\SubmissionsSearch;
 
@@ -38,18 +39,46 @@ class SubmissionsController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    // public function actionIndex()
+    // {
+    //     $searchModel = new SubmissionsSearch();
+    //     $dataProvider = $searchModel->search($this->request->queryParams);
+    //     // Check if the user is a student
+    //     if (Yii::$app->user->can('student')) {
+    //         // Filter data to show only submissions made by the current user
+    //         $dataProvider->query->andWhere(['USER_ID' => Yii::$app->user->id]);
+    //     }
+    //     return $this->render('index', [
+    //         'searchModel' => $searchModel,
+    //         'dataProvider' => $dataProvider,
+    //     ]);
+    // }
+    public function actionIndex($assignmentId = null)
     {
         $searchModel = new SubmissionsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-        // Check if the user is a student
-        if (Yii::$app->user->can('student')) {
-            // Filter data to show only submissions made by the current user
-            $dataProvider->query->andWhere(['USER_ID' => Yii::$app->user->id]);
+        $query = Submissions::find();
+
+        // Filter submissions by assignment if assignmentId is provided
+        if ($assignmentId !== null) {
+            $query->andWhere(['ASSIGNMENT_ID' => $assignmentId]);
         }
+
+        // Check if the user is a student and restrict submissions to their own
+        if (Yii::$app->user->can('student')) {
+            $query->andWhere(['USER_ID' => Yii::$app->user->id]);
+        }
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'assignmentId' => $assignmentId, // Pass assignmentId to the view
         ]);
     }
 
