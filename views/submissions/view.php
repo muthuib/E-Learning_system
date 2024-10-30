@@ -26,7 +26,7 @@ use yii\helpers\Url;
                     'method' => 'post',
                 ],
             ]) ?>
-        <a href="<?= Url::to(['submissions/index', 'SUBMISSION_ID' => $model->SUBMISSION_ID]) ?>"
+        <a href="<?= Url::to(['submissions/index', 'assignmentId' => $model->ASSIGNMENT_ID]) ?>"
             class="btn btn-info btn-sm">BACK</a>
         <?php elseif (Yii::$app->user->can('student')): ?>
         <a href="<?= Url::to(['submissions/index', 'SUBMISSION_ID' => $model->SUBMISSION_ID]) ?>"

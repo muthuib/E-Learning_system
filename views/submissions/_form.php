@@ -1,9 +1,11 @@
 <?php
 
+
 use yii\helpers\Html;
 use app\models\Assignments;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var app\models\Submissions $model */
@@ -31,7 +33,8 @@ use yii\helpers\ArrayHelper;
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']
         ) ?>
         <!-- Back button -->
-        <?= Html::a('Back', ['index'], ['class' => 'btn btn-secondary']) ?>
+        <a href="<?= Url::to(['submissions/index', 'assignmentId' => $model->ASSIGNMENT_ID]) ?>"
+            class="btn btn-info btn-sm">BACK</a>
     </div>
 
     <?php ActiveForm::end(); ?>
