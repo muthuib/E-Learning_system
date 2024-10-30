@@ -6,6 +6,7 @@ use Yii;
 use app\models\Grades;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use app\models\search\GradesSearch;
 use yii\web\BadRequestHttpException;
@@ -188,6 +189,24 @@ class GradesController extends Controller
             'model' => $this->findModel($GRADE_ID),
         ]);
     }
+    /**
+     * view grades as per the assignment.
+     * 
+     */
+    public function actionViewByAssignment($ASSIGNMENT_ID)
+    {
+        // Fetch the grades for the specific assignment through the submissions table
+        $dataProvider = new ActiveDataProvider([
+            'query' => Grades::find()
+                ->joinWith('sUBMISSION') // Adjust this based on your relation
+                ->where(['submissions.ASSIGNMENT_ID' => $ASSIGNMENT_ID]),
+        ]);
+
+        return $this->render('index', [
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
 
     /**
      * Creates a new Grades model.
@@ -225,7 +244,7 @@ class GradesController extends Controller
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Grade updated successfully.');
-            return $this->redirect(['submissions/index', 'GRADE_ID' => $model->GRADE_ID]);
+              return $this->redirect(['submissions/index', 'GRADE_ID' => $model->GRADE_ID]);         
         }
 
         return $this->render('update', [
