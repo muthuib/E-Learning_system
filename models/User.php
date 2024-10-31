@@ -255,5 +255,10 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(AuthAssignment::class, ['user_id' => 'ID']);
     }
-    
+    // implements the method to retrieve the roles assigned to that user through RBAC (Role-Based Access Control).
+    public function getRoles()
+    {
+        $auth = Yii::$app->authManager;
+        return $auth->getRolesByUser($this->ID); // Assuming 'ID' is the primary key in the user table
+    }
 }
