@@ -28,7 +28,7 @@ class UserController extends Controller
                     'class' => AccessControl::class,
                     'rules' => [
                         [
-                            'actions' => ['create', 'update', 'manage', 'assign-role'],
+                            'actions' => ['create', 'update', 'manage', 'assign-role', 'delete'],
                             'allow' => true,
                             'roles' => ['admin'], // Only admin can create/update and manage
                         ],
@@ -151,11 +151,11 @@ class UserController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($ID)
+    public function actionDelete($id)
     {
-        $this->findModel($ID)->delete();
+        $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['manage']);
     }
 
     /**

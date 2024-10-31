@@ -12,17 +12,10 @@ $this->title = $model->FIRST_NAME . ' ' . $model->LAST_NAME;
 <div class="user-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Update', ['update', 'ID' => $model->ID], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'ID' => $model->ID], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <div class="text-end mb-3">
+        <!-- Back button -->
+        <?= Html::a('Back', ['manage'], ['class' => 'btn btn-primary']) ?>
+    </div>
 
     <?= DetailView::widget([
         'model' => $model,
