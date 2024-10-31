@@ -34,7 +34,10 @@ $currentRoles = Yii::$app->authManager->getRolesByUser($model->ID);
 $currentRoleName = array_key_first($currentRoles); // Assuming the user has one role
 
 ?>
-
+<div class="text-end mb-3">
+    <!-- Back button -->
+    <?= Html::a('Back', ['manage', 'role' => $roleToPass], ['class' => 'btn btn-primary']) ?>
+</div>
 <div class="user-form">
 
     <?php $form = ActiveForm::begin(); ?>
@@ -62,13 +65,6 @@ $currentRoleName = array_key_first($currentRoles); // Assuming the user has one 
             $model->isNewRecord ? 'Add User' : 'Update User',
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']
         ) ?>
-        <!-- Back button -->
-        <?= Html::a('Back', ['manage'], ['class' => 'btn btn-secondary']) ?>
-    </div>
-    <div class="text-end mb-3">
-        <!-- Back button -->
-        <?= Html::a('Back', ['manage', 'role' => $roleToPass], ['class' => 'btn btn-primary']) ?>
-    </div>
-    <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end(); ?>
 
-</div>
+    </div>

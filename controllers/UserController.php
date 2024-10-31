@@ -78,16 +78,22 @@ class UserController extends Controller
         ]);
     }
     ///function to manage users n RBAC
-    public function actionManage()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),  // Assuming you're fetching data from the User model
-        ]);
+   public function actionManage($role = null)
+{
+    $query = User::find(); // Assuming you're using the User model to get users
+    $dataProvider = new ActiveDataProvider([
+        'query' => $query,
+    ]);
 
-        return $this->render('manage', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+    // Count total users
+    $totalUsersCount = $query->count();
+
+    return $this->render('manage', [
+        'dataProvider' => $dataProvider,
+        'totalUsersCount' => $totalUsersCount,
+        'role' => $role,
+    ]);
+}
 
     /**
      * Displays a single User model.
