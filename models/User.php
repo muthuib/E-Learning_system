@@ -29,11 +29,16 @@ use yii\web\IdentityInterface;
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
 
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
-    const ROLE_USER = 20;
-    const ROLE_ADMIN = 12;
+    const STATUS_INACTIVE = 9;
+
+    public static function getStatusOptions()
+    {
+        return [
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_INACTIVE => 'Inactive',
+        ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -63,14 +68,16 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
+            [['FIRST_NAME', 'LAST_NAME', 'PHONE_NUMBER'], 'required'],
             [['EMAIL', 'PASSWORD'], 'required'],
             [['STATUS', 'CREATED_AT', 'UPDATED_AT'], 'integer'],
             [['PASSWORD', 'EMAIL', 'AUTH_KEY', 'ACCESS_TOKEN', 'PASSWORD_RESET_TOKEN', 'VERIFICATION_TOKEN'], 'string', 'max' => 100],
-            [['EMAIL'], 'unique'],
+            [['EMAIL', 'PHONE_NUMBER'], 'unique', 'message' => '{attribute} already exists.'], // Unique check
             ['STATUS', 'default', 'value' => self::STATUS_INACTIVE],
-            ['STATUS', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
-            ['USER_ROLE', 'default', 'value' => self::ROLE_USER],
-            ['USER_ROLE', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
+            ['STATUS', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
+            // Ensure USER_ROLE is required and only accepts values from RBAC roles
+            ['USER_ROLE', 'required'],
+            ['USER_ROLE', 'in', 'range' => array_keys(Yii::$app->authManager->getRoles())],
         ];
     }
 
@@ -256,4 +263,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->hasMany(AuthAssignment::class, ['user_id' => 'ID']);
     }
     
+    // implements the method to retrieve the roles assigned to that user through RBAC (Role-Based Access Control).
+    public function getRoles()
+    {
+        $auth = Yii::$app->authManager;
+        return $auth->getRolesByUser($this->ID); // Assuming 'ID' is the primary key in the user table
+    }
+    
+
 }

@@ -107,23 +107,27 @@ class UserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
+   
     public function actionCreate()
     {
         $model = new User();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'ID' => $model->ID]);
+        if ($model->load(Yii::$app->request->post())) {
+            // Hash the password before saving
+            $model->PASSWORD = Yii::$app->security->generatePasswordHash($model->PASSWORD);
+
+            if ($model->save()) {
+                // Assign the selected role
+                $roleName = Yii::$app->request->post('User')['USER_ROLE'];
+                Yii::$app->authManager->assign(Yii::$app->authManager->getRole($roleName), $model->ID);
+                return $this->redirect(['view', 'id' => $model->ID]);
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
             'model' => $model,
         ]);
     }
-
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -135,14 +139,35 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->ID]);
+        // Fetch the current role of the user
+        $currentRoles = Yii::$app->authManager->getRolesByUser($model->ID);
+        $currentRoleName = array_key_first($currentRoles); // Assuming the user has one role
+
+        if ($model->load(Yii::$app->request->post())) {
+            // Hash the password before saving, only if it's provided
+            if (!empty($model->PASSWORD)) {
+                $model->PASSWORD = Yii::$app->security->generatePasswordHash($model->PASSWORD);
+            }
+
+            if ($model->save()) {
+                // Remove the previous role
+                if ($currentRoleName) {
+                    Yii::$app->authManager->revoke(Yii::$app->authManager->getRole($currentRoleName), $model->ID);
+                }
+
+                // Assign the selected new role
+                $newRoleName = Yii::$app->request->post('User')['USER_ROLE'];
+                Yii::$app->authManager->assign(Yii::$app->authManager->getRole($newRoleName), $model->ID);
+
+                return $this->redirect(['view', 'id' => $model->ID]);
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * Deletes an existing User model.
