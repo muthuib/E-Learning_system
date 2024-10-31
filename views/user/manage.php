@@ -21,6 +21,8 @@ $this->title = 'User Management';
     <?= Html::a('Students', ['user/manage', 'role' => 'student'], ['class' => 'btn btn-info']) ?>
     <?= Html::a('Instructors', ['user/manage', 'role' => 'instructor'], ['class' => 'btn btn-info']) ?>
     <?= Html::a('Admins', ['user/manage', 'role' => 'admin'], ['class' => 'btn btn-info']) ?>
+    <?= Html::a('Unassigned Users', ['user/manage', 'role' => 'unassigned'], ['class' => 'btn btn-warning']) ?>
+    <!-- New button -->
 </div>
 
 <!-- Grouped tables for different roles based on the role GET parameter -->
@@ -32,8 +34,14 @@ $this->title = 'User Management';
     $totalCount = 0; // Total users counter for the current group
 
     foreach ($dataProvider->models as $user) {
-        if (in_array($_GET['role'], array_keys(Yii::$app->authManager->getRolesByUser($user->ID)))) {
-            $totalCount++; // Increment count for valid user
+        if ($_GET['role'] === 'unassigned') {
+            if (empty(Yii::$app->authManager->getRolesByUser($user->ID))) {
+                $totalCount++; // Increment count for unassigned users
+            }
+        } else {
+            if (in_array($_GET['role'], array_keys(Yii::$app->authManager->getRolesByUser($user->ID)))) {
+                $totalCount++; // Increment count for valid user
+            }
         }
     }
     ?>
@@ -56,7 +64,8 @@ $this->title = 'User Management';
             // Reset current index counter for display
             $currentIndex = 1;
             foreach ($dataProvider->models as $user): ?>
-        <?php if (in_array($_GET['role'], array_keys(Yii::$app->authManager->getRolesByUser($user->ID)))): ?>
+        <?php if ($_GET['role'] === 'unassigned'): ?>
+        <?php if (empty(Yii::$app->authManager->getRolesByUser($user->ID))): ?>
         <tr>
             <td><?= $currentIndex++ ?></td> <!-- Use currentIndex for numbering -->
             <td><?= Html::encode($user->FIRST_NAME . ' ' . $user->LAST_NAME) ?></td>
@@ -66,10 +75,10 @@ $this->title = 'User Management';
                 <?= Html::beginForm(['user/assign-role'], 'post') ?>
                 <?= Html::hiddenInput('userId', $user->ID) ?>
                 <?= Html::dropDownList('roleName', null, [
-                                'admin' => 'Admin',
-                                'instructor' => 'Instructor',
-                                'student' => 'Student',
-                            ], ['prompt' => 'Select Role']) ?>
+                                    'admin' => 'Admin',
+                                    'instructor' => 'Instructor',
+                                    'student' => 'Student',
+                                ], ['prompt' => 'Select Role']) ?>
                 <?= Html::submitButton('Assign Role', ['class' => 'btn btn-primary']) ?>
                 <?= Html::endForm() ?>
             </td>
@@ -83,12 +92,48 @@ $this->title = 'User Management';
                 <!-- Delete User Button -->
                 <?= Html::beginForm(['user/delete', 'id' => $user->ID], 'post', ['style' => 'display:inline;']) ?>
                 <?= Html::submitButton('Delete', [
-                                'class' => 'btn btn-danger btn-sm',
-                                'data-confirm' => 'Are you sure you want to delete this user?',
-                            ]) ?>
+                                    'class' => 'btn btn-danger btn-sm',
+                                    'data-confirm' => 'Are you sure you want to delete this user?',
+                                ]) ?>
                 <?= Html::endForm() ?>
             </td>
         </tr>
+        <?php endif; ?>
+        <?php else: ?>
+        <?php if (in_array($_GET['role'], array_keys(Yii::$app->authManager->getRolesByUser($user->ID)))): ?>
+        <tr>
+            <td><?= $currentIndex++ ?></td> <!-- Use currentIndex for numbering -->
+            <td><?= Html::encode($user->FIRST_NAME . ' ' . $user->LAST_NAME) ?></td>
+            <td><?= Html::encode($user->EMAIL) ?></td>
+            <td>
+                <!-- Role Assignment -->
+                <?= Html::beginForm(['user/assign-role'], 'post') ?>
+                <?= Html::hiddenInput('userId', $user->ID) ?>
+                <?= Html::dropDownList('roleName', null, [
+                                    'admin' => 'Admin',
+                                    'instructor' => 'Instructor',
+                                    'student' => 'Student',
+                                ], ['prompt' => 'Select Role']) ?>
+                <?= Html::submitButton('Assign Role', ['class' => 'btn btn-primary']) ?>
+                <?= Html::endForm() ?>
+            </td>
+            <td>
+                <!-- View User Button -->
+                <?= Html::a('View', ['user/view', 'id' => $user->ID], ['class' => 'btn btn-info btn-sm']) ?>
+
+                <!-- Update User Button -->
+                <?= Html::a('Update', ['user/update', 'id' => $user->ID], ['class' => 'btn btn-warning btn-sm']) ?>
+
+                <!-- Delete User Button -->
+                <?= Html::beginForm(['user/delete', 'id' => $user->ID], 'post', ['style' => 'display:inline;']) ?>
+                <?= Html::submitButton('Delete', [
+                                    'class' => 'btn btn-danger btn-sm',
+                                    'data-confirm' => 'Are you sure you want to delete this user?',
+                                ]) ?>
+                <?= Html::endForm() ?>
+            </td>
+        </tr>
+        <?php endif; ?>
         <?php endif; ?>
         <?php endforeach; ?>
     </tbody>

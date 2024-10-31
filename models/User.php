@@ -255,4 +255,5 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(AuthAssignment::class, ['user_id' => 'ID']);
     }
+    
 }

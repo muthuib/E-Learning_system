@@ -61,8 +61,8 @@ class RbacController extends Controller
             $manageUsersPermission = $auth->createPermission('manageUsersPermission');
             $manageUsers->description = 'manage Users Permission';
             $auth->add($manageUsersPermission);
-        } 
-        
+        }
+
         // CREATE ROLES AND ASSIGN ROLES
         //check if the role exists
         $admin = $auth->getRole('admin');
@@ -92,6 +92,7 @@ class RbacController extends Controller
         if (!$auth->hasChild($admin, $manageUsersPermission)) {
             $auth->addChild($admin, $manageUsersPermission);
         }
+
 
         //check if the role exists
         $instructor = $auth->getRole('instructor');
