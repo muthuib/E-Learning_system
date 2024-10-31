@@ -9,6 +9,20 @@ use app\models\User;
 /** @var app\models\User $model */
 /** @var yii\widgets\ActiveForm $form */
 
+//LOGIC TO IMPLEMENT BACK BUTTON TO RETURN TO RESPECTIVE TABLE OF RECORDS AS PER USER ROLE
+\yii\web\YiiAsset::register($this);
+// Get the user's roles
+$roles = Yii::$app->authManager->getRolesByUser($model->ID);
+$currentRole = array_map(function ($role) {
+    return ucfirst($role->name); // Ensure each role name is capitalized
+}, $roles);
+$currentRole = implode(', ', $currentRole); // Join roles into a string for display
+
+// Optionally, if you want to pass only the first role for simplicity
+$currentRoleArray = array_values($roles); // Get the roles as an array
+$roleToPass = !empty($currentRoleArray) ? $currentRoleArray[0]->name : null; // Pass only the first role
+//END OF LOGIC
+
 // Fetch roles from RBAC authManager
 $roles = Yii::$app->authManager->getRoles();
 $roleOptions = ArrayHelper::map($roles, 'name', function ($role) {
@@ -50,6 +64,10 @@ $currentRoleName = array_key_first($currentRoles); // Assuming the user has one 
         ) ?>
         <!-- Back button -->
         <?= Html::a('Back', ['manage'], ['class' => 'btn btn-secondary']) ?>
+    </div>
+    <div class="text-end mb-3">
+        <!-- Back button -->
+        <?= Html::a('Back', ['manage', 'role' => $roleToPass], ['class' => 'btn btn-primary']) ?>
     </div>
     <?php ActiveForm::end(); ?>
 
