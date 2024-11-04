@@ -52,7 +52,7 @@ class Assignments extends \yii\db\ActiveRecord
     {
         return [
             'ASSIGNMENT_ID' => 'Assignment ID',
-            'COURSE_ID' => 'Course ID',
+            'COURSE_ID' => 'Course Name',
             'TITLE' => 'Title',
             'DESCRIPTION' => 'Description',
             'DUE_DATE' => 'Due Date',

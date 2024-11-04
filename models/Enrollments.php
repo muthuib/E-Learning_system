@@ -46,7 +46,7 @@ class Enrollments extends \yii\db\ActiveRecord
         return [
             'ENROLLMENT_ID' => 'Enrollment ID',
             'USER_ID' => 'User ID',
-            'COURSE_ID' => 'Course ID',
+            'COURSE_ID' => 'Course Name',
             'ENROLLED_AT' => 'Enrolled At',
         ];
     }
