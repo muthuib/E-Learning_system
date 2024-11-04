@@ -30,15 +30,16 @@ $this->title = 'Students Per Course';
         $enrolledCount = count($course->enrollments);
         ?>
 
-    <div class="course-section">
-        <!-- Button to display the course name and the number of students enrolled.
-                 When clicked, it toggles visibility of the enrolled students list -->
-        <button class="btn btn-info toggle-students" data-target="#students-<?= $index ?>">
-            <?= Html::encode($course->COURSE_NAME) ?>
-            <span style="font-size: 1.0em; color: purple; font-weight: bold;">(Enrolled:
-                <?= $enrolledCount ?>)</span>
-        </button>
-        <!-- // -->
+    <div class="course-section mb-3">
+        <div class="btn-group" role="group" aria-label="Course actions">
+            <!-- Button to display the course name and the number of students enrolled -->
+            <button class="btn btn-info toggle-students" data-target="#students-<?= $index ?>">
+                <?= Html::encode($course->COURSE_NAME) ?>
+                <span style="font-size: 1.0em; color: purple; font-weight: bold;">(Enrolled:
+                    <?= $enrolledCount ?>)</span>
+            </button>
+        </div>
+
         <p></p>
         <!-- Section to display enrolled students in a table, initially hidden -->
         <div id="students-<?= $index ?>" class="students-list" style="display: none;">
@@ -54,6 +55,7 @@ $this->title = 'Students Per Course';
                         <th>Student Email</th>
                         <th>Phone Number</th>
                         <th>Enrolled At</th>
+                        <th>Actions</th> <!-- New column for actions -->
                     </tr>
                 </thead>
                 <tbody>
@@ -62,11 +64,20 @@ $this->title = 'Students Per Course';
                             foreach ($course->enrollments as $enrollment): ?>
                     <tr>
                         <td><?= $studentNumber ?></td>
-                        <td><?= Html::encode($enrollment->uSER->FIRST_NAME . '.' . $enrollment->uSER->LAST_NAME) ?>
-                        </td>
+                        <td><?= Html::encode($enrollment->uSER->FIRST_NAME . ' ' . $enrollment->uSER->LAST_NAME) ?></td>
                         <td><?= Html::encode($enrollment->uSER->EMAIL) ?></td>
                         <td><?= Html::encode($enrollment->uSER->PHONE_NUMBER) ?></td>
                         <td><?= Html::encode($enrollment->ENROLLED_AT) ?></td>
+                        <td>
+                            <!-- Delete button for enrolled student -->
+                            <?= Html::a('Delete', ['enrollments/delete', 'ENROLLMENT_ID' => $enrollment->ENROLLMENT_ID], [
+                                            'class' => 'btn btn-danger btn-sm',
+                                            'data' => [
+                                                'confirm' => 'Are you sure you want to delete this student from the enrollment list?',
+                                                'method' => 'post',
+                                            ],
+                                        ]) ?>
+                        </td>
                     </tr>
                     <?php
                                 $studentNumber++; // Increment student counter
@@ -89,7 +100,12 @@ $js = <<<JS
     // Add click event to all elements with class 'toggle-students'
     $('.toggle-students').on('click', function() {
         var target = $(this).data('target'); // Get the target element to toggle
-        $(target).toggle(); // Toggle the visibility of the target element
+
+        // Hide all student lists
+        $('.students-list').not(target).hide();
+
+        // Toggle the visibility of the target element
+        $(target).toggle();
     });
 JS;
 $this->registerJs($js, View::POS_READY);
