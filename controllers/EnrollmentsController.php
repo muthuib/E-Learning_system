@@ -146,7 +146,7 @@ class EnrollmentsController extends Controller
         Yii::$app->session->setFlash('danger', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Course enrollment deleted successfully.');
 
 
-        return $this->redirect(['index']);
+        return $this->redirect(['students-per-course']);
     }
 
     /**
