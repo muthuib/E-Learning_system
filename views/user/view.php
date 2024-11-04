@@ -43,9 +43,15 @@ $roleToPass = !empty($currentRoleArray) ? $currentRoleArray[0]->name : null; // 
             'EMAIL:email',
             'PHONE_NUMBER',
             [
-                'label' => 'Roles',
+                'label' => 'Role',
                 'value' => function () use ($currentRole) {
                     return $currentRole; // Display the user's roles
+                },
+            ],
+            [
+                'label' => 'Status', // Label for the Status column
+                'value' => function ($model) {
+                    return $model->STATUS === 10 ? 'Active' : 'Inactive'; // Display Active or Inactive based on STATUS value
                 },
             ],
         ],

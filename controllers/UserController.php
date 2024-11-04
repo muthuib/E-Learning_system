@@ -78,16 +78,22 @@ class UserController extends Controller
         ]);
     }
     ///function to manage users n RBAC
-    public function actionManage()
-    {
-        $dataProvider = new ActiveDataProvider([
-            'query' => User::find(),  // Assuming you're fetching data from the User model
-        ]);
+   public function actionManage($role = null)
+{
+    $query = User::find(); // Assuming you're using the User model to get users
+    $dataProvider = new ActiveDataProvider([
+        'query' => $query,
+    ]);
 
-        return $this->render('manage', [
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+    // Count total users
+    $totalUsersCount = $query->count();
+
+    return $this->render('manage', [
+        'dataProvider' => $dataProvider,
+        'totalUsersCount' => $totalUsersCount,
+        'role' => $role,
+    ]);
+}
 
     /**
      * Displays a single User model.
@@ -117,6 +123,7 @@ class UserController extends Controller
             $model->PASSWORD = Yii::$app->security->generatePasswordHash($model->PASSWORD);
 
             if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'New User Added successfully.');
                 // Assign the selected role
                 $roleName = Yii::$app->request->post('User')['USER_ROLE'];
                 Yii::$app->authManager->assign(Yii::$app->authManager->getRole($roleName), $model->ID);
@@ -150,6 +157,7 @@ class UserController extends Controller
             }
 
             if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'User Updated successfully.');
                 // Remove the previous role
                 if ($currentRoleName) {
                     Yii::$app->authManager->revoke(Yii::$app->authManager->getRole($currentRoleName), $model->ID);
