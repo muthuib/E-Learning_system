@@ -123,6 +123,7 @@ class UserController extends Controller
             $model->PASSWORD = Yii::$app->security->generatePasswordHash($model->PASSWORD);
 
             if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'New User Added successfully.');
                 // Assign the selected role
                 $roleName = Yii::$app->request->post('User')['USER_ROLE'];
                 Yii::$app->authManager->assign(Yii::$app->authManager->getRole($roleName), $model->ID);
@@ -156,6 +157,7 @@ class UserController extends Controller
             }
 
             if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'User Updated successfully.');
                 // Remove the previous role
                 if ($currentRoleName) {
                     Yii::$app->authManager->revoke(Yii::$app->authManager->getRole($currentRoleName), $model->ID);
