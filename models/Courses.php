@@ -56,7 +56,7 @@ class Courses extends \yii\db\ActiveRecord
             'COURSE_ID' => 'Course ID',
             'COURSE_NAME' => 'Course Name',
             'DESCRIPTION' => 'Description',
-            'INSTRUCTOR_ID' => 'Instructor ID',
+            'INSTRUCTOR_ID' => 'Instructor',
             'CREATED_AT' => 'Created At',
             'UPDATED_AT' => 'Updated At',
         ];

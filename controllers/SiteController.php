@@ -12,6 +12,8 @@ use app\models\LoginForm;
 use app\models\MpesaForm;
 use app\models\SignupForm;
 use app\models\ContactForm;
+use app\models\Courses; // Import the Course model
+use app\models\Testimonials;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\models\MpesaTransaction;
@@ -73,9 +75,18 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+      public function actionIndex()
     {
-        return $this->render('index');
+        // Adjust the sorting column to an existing one, e.g., `created_at`
+        $courses = Courses::find()->orderBy(['created_at' => SORT_DESC])->limit(6)->all();
+
+        // Fetch 3 recent testimonials, modify if needed
+         $testimonials = Testimonials::find()->orderBy(['date' => SORT_DESC])->limit(3)->all();
+
+        return $this->render('index', [
+            'courses' => $courses,
+            'testimonials' => $testimonials,
+        ]);
     }
 
     /**
@@ -115,7 +126,7 @@ class SiteController extends Controller
                 return $this->redirect(Yii::$app->homeUrl);
             } else {
                 // If signup fails, flash error messages are set in the model
-                Yii::$app->session->setFlash('error', 'There was a problem signing up. Please ensure your email is not already registered.');
+               // Yii::$app->session->setFlash('error', 'There was a problem signing up. Please ensure your email is not already registered.');
             }
         }
 
@@ -362,7 +373,7 @@ class SiteController extends Controller
 
         // Process the form submission
         if ($model->load(Yii::$app->request->post()) && $model->resetPassword($user)) {
-            Yii::$app->session->setFlash('success', 'Paaword reset was successful.');
+            Yii::$app->session->setFlash('success', 'Password reset was successful.');
             return $this->goHome();
         }
 

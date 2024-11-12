@@ -3,9 +3,12 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\Courses;
 use app\models\Lessons;
 use app\web\Controller;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use app\models\search\LessonsSearch;
 
@@ -19,17 +22,33 @@ class LessonsController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        //restricting user access not to type unauthorized directory  to access it when logged in
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['delete', 'create', 'update', 'view', 'index'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['admin'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['delete', 'create', 'update', 'view', 'index'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['instructor'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['index', 'view'], // Same actions
+                        'allow' => true, // Deny access to other users
+                        'roles' => ['student'], // Authenticated users
+                        'denyCallback' => function ($rule, $action) {
+                            Yii::$app->session->setFlash('error', 'You do not have permission to access this page.');
+                            return Yii::$app->response->redirect(['site/index']); // Redirect to the home page or any page
+                        },
                     ],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
     /**
@@ -37,14 +56,51 @@ class LessonsController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($courseId = null)
     {
-        $searchModel = new LessonsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $userId = Yii::$app->user->id; // Current logged-in user ID
+        $authManager = Yii::$app->authManager;
+
+        // Check user roles
+        $isInstructor = $authManager->getAssignment('instructor', $userId) !== null;
+        $isStudent = $authManager->getAssignment('student', $userId) !== null;
+
+        if ($isInstructor) {
+            // Fetch courses assigned to this instructor that have lessons
+            $courses = Courses::find()
+                ->where(['INSTRUCTOR_ID' => $userId])
+                ->innerJoinWith('lessons') // Assuming 'lessons' relation in Courses model
+                ->all();
+        } elseif ($isStudent) {
+            // Fetch courses where the student is enrolled
+            $courses = Courses::find()
+                ->innerJoin('enrollments', 'enrollments.COURSE_ID = courses.COURSE_ID')
+                ->where(['enrollments.USER_ID' => $userId])
+                ->all();
+        } else {
+            // If admin, fetch all courses
+            $courses = Courses::find()->all();
+        }
+
+        // Calculate lesson counts for each course
+        $courseLessonCounts = [];
+        foreach ($courses as $course) {
+            $courseLessonCounts[$course->COURSE_ID] = Lessons::find()
+                ->where(['COURSE_ID' => $course->COURSE_ID])
+                ->count();
+        }
+
+        // Set up the lessons data provider based on selected course ID
+        $dataProvider = new ActiveDataProvider([
+            'query' => Lessons::find()->where(['COURSE_ID' => $courseId]),
+            'pagination' => ['pageSize' => 10],
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'courses' => $courses,
+            'courseLessonCounts' => $courseLessonCounts,
+            'selectedCourseId' => $courseId,
         ]);
     }
 
@@ -83,7 +139,7 @@ class LessonsController extends Controller
             'model' => $model,
         ]);
     }
-
+    
     /**
      * Updates an existing Lessons model.
      * If update is successful, the browser will be redirected to the 'view' page.

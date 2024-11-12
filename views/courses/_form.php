@@ -30,7 +30,9 @@ use app\models\User;
         $instructors = User::find()->joinWith('authAssignments')
             ->where(['auth_assignment.item_name' => 'instructor'])
             ->all(); // Fetch all users with the "instructor" role
-        $instructorList = ArrayHelper::map($instructors, 'ID', 'EMAIL'); // Map ID to the instructor's username
+        $instructorList = ArrayHelper::map($instructors, 'ID', function ($instructor) {
+            return $instructor['FIRST_NAME'] . ' ' . $instructor['LAST_NAME'];
+        }); // Map ID to the instructor's NAMES
         echo $form->field($model, 'INSTRUCTOR_ID')->dropDownList($instructorList, ['prompt' => 'Select Instructor']);
     }
     ?>

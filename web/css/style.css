@@ -37,7 +37,6 @@ h5,
 h6 {
   font-family: "Nunito", sans-serif;
 }
-
 /*--------------------------------------------------------------
 # Main
 --------------------------------------------------------------*/
@@ -51,6 +50,11 @@ h6 {
   #main {
     padding: 20px;
   }
+}
+/* Target all labels associated with required fields */
+label.required::after {
+    content: " *"; /* Add the asterisk after the label */
+    color: red; /* Set the color of the asterisk to red */
 }
 
 /*--------------------------------------------------------------
@@ -381,7 +385,7 @@ h6 {
   z-index: 997;
   height: 80px;
   box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
-  background-color: #ffffff;
+  background-color: azure;
   padding-left: 20px;
   /* Toggle Sidebar Button */
   /* Search Bar */
@@ -613,7 +617,7 @@ p{
   scrollbar-width: thin;
   scrollbar-color: #aab7cf transparent;
   box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
-  background-color: #fff;
+  background-color: brown;
 }
 
 @media (max-width: 1199px) {
@@ -688,9 +692,9 @@ p{
   align-items: center;
   font-size: 15px;
   font-weight: 600;
-  color: #4154f1;
+  color: white;
   transition: 0.3;
-  background: #f6f9ff;
+  /* background: #f6f9ff; */
   padding: 10px 15px;
   border-radius: 4px;
 }
@@ -698,21 +702,21 @@ p{
 .sidebar-nav .nav-link i {
   font-size: 16px;
   margin-right: 10px;
-  color: #4154f1;
+  color: white;
 }
 
 .sidebar-nav .nav-link.collapsed {
-  color: #012970;
-  background: #fff;
+  color: white;
+  /* background: #fff; */
 }
 
 .sidebar-nav .nav-link.collapsed i {
-  color: #899bbd;
+  color: white;
 }
 
 .sidebar-nav .nav-link:hover {
-  color: #4154f1;
-  background: #f6f9ff;
+  color: green;
+  background: wheat;
 }
 
 .sidebar-nav .nav-link:hover i {
@@ -1260,4 +1264,88 @@ p{
         background-color: #f0f0f0;
         border-color: #ccc;
     }
+
+    /* CSS FOR SITE/INDEX */
+    /* Hero Section */
+.hero {
+    /* background-image: url('/images/hero.JPG'); */
+    background-size: cover;
+    color: #fff;
+    text-align: center;
+    padding: 100px 0px;
+}
+
+.hero .btn {
+    margin: 10px;
+}
+
+/* Features Section */
+.features {
+    display: flex;
+    gap: 20px;
+    text-align: center;
+    padding: 40px 0;
+}
+
+.feature i {
+    font-size: 2em;
+    color: #007bff;
+}
+
+/* Popular Courses */
+.popular-courses .course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.course-item img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+/* Testimonials */
+.testimonials {
+    background-color: #f9f9f9;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.testimonial-carousel {
+    display: flex;
+    overflow-x: auto;
+}
+
+/* CTA Banner */
+.cta-banner {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 40px;
+}
+
+/* Footer */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.footer .quick-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer .quick-links li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.footer .social-icons a {
+    margin: 0 5px;
+    color: #fff;
+}
+
+
 

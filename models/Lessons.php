@@ -49,7 +49,7 @@ class Lessons extends \yii\db\ActiveRecord
     {
         return [
             'LESSON_ID' => 'Lesson ID',
-            'COURSE_ID' => 'Course ID',
+            'COURSE_ID' => 'Course Name',
             'TITLE' => 'Title',
             'CONTENT' => 'Content',
             'VIDEO_URL' => 'Video Url',

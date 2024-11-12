@@ -23,6 +23,12 @@ class UserController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                 'verbs' => [
+                    'class' => VerbFilter::className(),
+                    'actions' => [
+                        'delete' => ['POST'],
+                    ],
+                ],
                 ///implements RBAC
                 'access' => [
                     'class' => AccessControl::class,
@@ -40,12 +46,6 @@ class UserController extends Controller
                         [
                             'allow' => false, // Deny all other actions
                         ],
-                    ],
-                ],
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
                     ],
                 ],
             ]
@@ -115,26 +115,36 @@ class UserController extends Controller
      */
    
     public function actionCreate()
-    {
-        $model = new User();
+{
+    $model = new User();
 
-        if ($model->load(Yii::$app->request->post())) {
-            // Hash the password before saving
-            $model->PASSWORD = Yii::$app->security->generatePasswordHash($model->PASSWORD);
+    if ($model->load(Yii::$app->request->post())) {
+        // Hash the password before saving
+        $model->PASSWORD = Yii::$app->security->generatePasswordHash($model->PASSWORD);
+        
+        // Generate Auth Key and Access Token
+        $model->generateAuthKey();
+        $model->generateAccessToken();
 
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'New User Added successfully.');
-                // Assign the selected role
-                $roleName = Yii::$app->request->post('User')['USER_ROLE'];
-                Yii::$app->authManager->assign(Yii::$app->authManager->getRole($roleName), $model->ID);
-                return $this->redirect(['view', 'id' => $model->ID]);
-            }
+        // Save the user
+        if ($model->save()) {
+            Yii::$app->session->setFlash('success', 'New User Added successfully.');
+
+            // Assign the selected role
+            $roleName = Yii::$app->request->post('User')['USER_ROLE'];
+            Yii::$app->authManager->assign(Yii::$app->authManager->getRole($roleName), $model->ID);
+
+            return $this->redirect(['view', 'id' => $model->ID]);
+        } else {
+            Yii::$app->session->setFlash('error', 'There was an error creating the user.');
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
     }
+
+    return $this->render('create', [
+        'model' => $model,
+    ]);
+}
+
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -239,7 +249,7 @@ class UserController extends Controller
 
         // Assign the new role
         $auth->assign($role, $userId);
-        Yii::$app->session->setFlash('success', 'New role assigned and previous roles removed successfully.');
+        Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> New role assigned and previous roles removed successfully.');
 
         return $this->redirect(['user/manage']);
     }

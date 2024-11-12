@@ -16,7 +16,8 @@ $this->title = $model->TITLE;
 <div class="lessons-view">
     <div class="text-end mb-3">
         <!-- Back button -->
-        <?= Html::a('Back to Lessons', ['lessons/index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Back to Lessons', ['courses/continue-classes', 'courseId' => $model->COURSE_ID], ['class' => 'btn btn-primary']) ?>
+
     </div>
     <h1><?= Html::encode($this->title) ?></h1>
     <div class="text-end mb-3">
@@ -25,7 +26,6 @@ $this->title = $model->TITLE;
     </div>
     <div class="d-flex justify-content-between mt-3">
         <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
-        <a href="<?= Url::to(['view', 'LESSON_ID' => $model->LESSON_ID]) ?>" class="btn btn-info">View</a>
         <a href="<?= Url::to(['update', 'LESSON_ID' => $model->LESSON_ID]) ?>" class="btn btn-primary">Update</a>
         <?= Html::a('Delete', ['delete', 'LESSON_ID' => $model->LESSON_ID], [
                 'class' => 'btn btn-danger',

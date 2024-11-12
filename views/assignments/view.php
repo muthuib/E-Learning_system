@@ -12,7 +12,10 @@ use yii\widgets\DetailView;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
+    <p><div class="text-end mb-3">
+         <?= Html::a('Back to Assignments', ['assignments/index'], ['class' => 'btn btn-primary']) ?>
+</div>
+        <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
         <?= Html::a('Update', ['update', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'ASSIGNMENT_ID' => $model->ASSIGNMENT_ID], [
             'class' => 'btn btn-danger',
@@ -21,6 +24,7 @@ use yii\widgets\DetailView;
                 'method' => 'post',
             ],
         ]) ?>
+        <?php endif; ?>
     </p>
 
     <?= DetailView::widget([

@@ -37,15 +37,17 @@ $this->title = 'Enrollments';
                         <!-- Action buttons -->
                         <a href="<?= Url::to(['view', 'ENROLLMENT_ID' => $model->ENROLLMENT_ID]) ?>"
                             class="btn btn-info">View</a>
+                        <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
                         <a href="<?= Url::to(['update', 'ENROLLMENT_ID' => $model->ENROLLMENT_ID]) ?>"
                             class="btn btn-primary">Update</a>
                         <?= Html::a('Delete', ['delete', 'ENROLLMENT_ID' => $model->ENROLLMENT_ID], [
-                                'class' => 'btn btn-danger',
-                                'data' => [
-                                    'confirm' => 'Are you sure you want to delete this item?',
-                                    'method' => 'post',
-                                ],
-                            ]) ?>
+                                    'class' => 'btn btn-danger',
+                                    'data' => [
+                                        'confirm' => 'Are you sure you want to delete this item?',
+                                        'method' => 'post',
+                                    ],
+                                ]) ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

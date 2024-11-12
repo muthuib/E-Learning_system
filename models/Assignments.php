@@ -37,8 +37,9 @@ class Assignments extends \yii\db\ActiveRecord
         return [
             //[['COURSE_ID'], 'integer'],
             [['COURSE_ID'], 'required', 'message' => 'Course Name cannot be blank.'], // Ensures COURSE_ID is mandatory
-            [['TITLE'], 'required'],
+            [['TITLE', 'TOTAL_MARKS'], 'required'],
             [['DESCRIPTION'], 'string'],
+              [['TOTAL_MARKS'], 'integer'],
             [['DUE_DATE', 'CREATED_AT', 'UPDATED_AT'], 'safe'],
             [['TITLE'], 'string', 'max' => 255],
             [['COURSE_ID'], 'exist', 'skipOnError' => true, 'targetClass' => Courses::class, 'targetAttribute' => ['COURSE_ID' => 'COURSE_ID']],
@@ -55,6 +56,7 @@ class Assignments extends \yii\db\ActiveRecord
             'COURSE_ID' => 'Course Name',
             'TITLE' => 'Title',
             'DESCRIPTION' => 'Description',
+            'TOTAL_MARKS' => 'Out of',
             'DUE_DATE' => 'Due Date',
             'CREATED_AT' => 'Created At',
             'UPDATED_AT' => 'Updated At',
@@ -91,5 +93,9 @@ class Assignments extends \yii\db\ActiveRecord
             ->exists();
     }
 
-    
+    public function getGrades()
+{
+    return $this->hasMany(Grades::class, ['ASSIGNMENT_ID' => 'ASSIGNMENT_ID']);
+}
+
 }

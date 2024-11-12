@@ -19,7 +19,7 @@ $currentUrl = Yii::$app->request->url;
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link " href="<?= Yii::$app->urlManager->createUrl(['/dashboard/index']) ?>">
+            <a class="nav-link " href="<?= Yii::$app->urlManager->createUrl(['/courses/index']) ?>">
                 <i class="bi bi-grid"></i>
                 <span>Home</span>
             </a>
@@ -52,7 +52,7 @@ $currentUrl = Yii::$app->request->url;
         </li><!-- End  Courses Nav -->
 
         </li><!-- End of Course categories Nav -->
-        <?php if (Yii::$app->user->can('student')): ?>
+        <?php if (Yii::$app->user->can('student')|| Yii::$app->user->can('instructor')): ?>
         <li class="nav-item">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/enrollments/index']) ?>">
                 <i class="bi bi-buildings"></i>
@@ -97,6 +97,12 @@ $currentUrl = Yii::$app->request->url;
         </li>
         <?php endif; ?>
         <!-- End of grades Nav -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/results/index']) ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Final Results</span>
+            </a>
+        </li><!-- End of submissions Nav -->
         <!-- check if the user has a permission to manage users -->
         <?php if (Yii::$app->user->can('admin')): ?>
         <li class="nav-item <?= strpos($currentUrl, '/applicant-details/create') !== false ? 'active' : '' ?>">

@@ -1,130 +1,137 @@
 <?php
 
-use app\models\Grades;
-use app\models\Assignments; // Assuming you have an Assignments model
+use app\models\Courses;
+use app\models\Assignments;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
-use yii\web\JsExpression;
 use yii\widgets\Pjax;
+use yii\web\JsExpression;
 
 /** @var yii\web\View $this */
-/** @var app\models\search\GradesSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
+/** @var int|null $courseId */
+/** @var int|null $assignmentId */
+/** @var \yii\web\User $user */
 
 $this->title = 'Grades';
 ?>
-<div class="grades-index">
 
+<div class="grades-index">
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <div class="text-end mb-3">
-        <?= Html::a('Add Multiple Grades', ['grades/multi-grade-form'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Update Multiple Grades', ['grades/multi-update-form'], ['class' => 'btn btn-primary']) ?>
-    </div>
-    <div class="text-end mb-3">
-        <!-- Back button -->
-        <?= Html::a('Back', ['grades/index'], ['class' => 'btn btn-primary']) ?>
-    </div>
-    <!-- Display assignment links -->
-    <h2>Assignments</h2>
-    <p style="color: green;">Please select an assignment to view grades.</p>
-    <ul id="assignment-links" style="<?= isset($_GET['ASSIGNMENT_ID']) ? 'display:none;' : '' ?>">
+    <!-- Display course buttons -->
+    <div class="mb-4">
+        <p style="color: brown;">Select a Course to view grades</p>
         <?php
-        // Fetch all assignments
-        $assignments = Assignments::find()->all(); // Adjust this based on your model relations
-        foreach ($assignments as $assignment): ?>
-        <li>
-            <?= Html::a(Html::encode($assignment->TITLE), [
-                    'grades/view-by-assignment',
-                    'ASSIGNMENT_ID' => $assignment->ASSIGNMENT_ID,
-                    'TITLE' => $assignment->TITLE
-                ], [
-                    'class' => 'assignment-link',
-                    'data-id' => $assignment->ASSIGNMENT_ID // Add data attribute for the assignment ID
-                ]) ?>
-        </li>
-        <?php endforeach; ?>
-    </ul>
+        // Check user role
+        $userRole = Yii::$app->user->identity->role;  // Get the user's role
+        $userId = Yii::$app->user->identity->ID;  // Get the user ID
 
-    <?php Pjax::begin(); ?>
+        // Load courses based on user role
+        if ($userRole == 'admin') {
+            // Admin sees all courses
+            $courses = Courses::find()->all();
+        } elseif ($userRole == 'instructor') {
+            // Instructor sees only assigned courses
+            $courses = Courses::find()->where(['INSTRUCTOR_ID' => $userId])->all();
+        } elseif ($userRole == 'student') {
+            // Student sees only enrolled courses (assuming enrollment model is available)
+            $courses = Courses::find()
+                ->joinWith('enrollments') // Assuming the relationship is set
+                ->where(['enrollments.USER_ID' => $userId])
+                ->all();
+        }
 
-    <?= Html::beginForm(['grades/delete-multiple'], 'post', ['id' => 'multiple-delete-form']); ?>
-    <?= Html::beginForm(['grades/update-multiple'], 'post', ['id' => 'multi-update-form']); ?>
-
-    <!-- Check if ASSIGNMENT_ID is set in the request -->
-    <?php if (isset($_GET['ASSIGNMENT_ID'])): ?>
-    <?php
-        // Display the assignment title
-        $assignmentTitle = isset($_GET['TITLE']) ? Html::encode($_GET['TITLE']) : '';
-        if ($assignmentTitle) {
-            echo "<h2 style='font-size: 1.3rem; color: #4B0082; font-weight: bold; margin-top: 20px;'>Grades for Assignment: $assignmentTitle</h2>";
+        foreach ($courses as $course) {
+            echo Html::a(
+                $course->COURSE_NAME,
+                ['grades/index', 'courseId' => $course->COURSE_ID],
+                [
+                    'class' => 'btn ' . (isset($courseId) && $courseId == $course->COURSE_ID ? 'btn-info' : 'btn-secondary') . ' m-1'
+                ]
+            );
         }
         ?>
+    </div>
 
-    <?= GridView::widget([
+    <!-- Display assignment links if a course is selected -->
+    <?php if (isset($courseId)): ?>
+        <?php $selectedCourse = Courses::findOne($courseId); ?>
+        <ul style="list-style-type: none;"> <!-- Remove default dots -->
+            <p style="color: green;">Assignments for <?= Html::encode($selectedCourse->COURSE_NAME) ?></p>
+            <?php
+            $assignments = Assignments::find()->where(['COURSE_ID' => $courseId])->all();
+            $counter = 1; // Initialize counter for numbering assignments
+            foreach ($assignments as $assignment) {
+                echo '<li class="assignment" id="assignment-' . $assignment->ASSIGNMENT_ID . '">' . $counter . '. ' . Html::a(
+                    Html::encode($assignment->TITLE),
+                    ['grades/index', 'courseId' => $courseId, 'assignmentId' => $assignment->ASSIGNMENT_ID],
+                    ['class' => 'assignment-link']
+                ) . '</li>';
+                $counter++; // Increment counter after each assignment
+            }
+            ?>
+        </ul>
+    <?php endif; ?>
+
+    <!-- Display grades if an assignment is selected -->
+    <?php if (isset($assignmentId)): ?>
+        <?php
+        // Find assignment title for display
+        $assignment = Assignments::findOne($assignmentId);
+        $assignmentTitle = $assignment ? Html::encode($assignment->TITLE) : '';
+        ?>
+        <h style="color: purple; font-weight: bold;">Grades for Assignment: <?= $assignmentTitle ?></h>
+
+        <?php Pjax::begin(); ?>
+        <?= GridView::widget([
             'dataProvider' => $dataProvider,
             'columns' => [
-                ['class' => 'yii\grid\SerialColumn'], // Automatically numbered column
-
-                // Display student name associated with submission
+                ['class' => 'yii\grid\SerialColumn'],
                 [
                     'attribute' => 'SUBMISSION_ID',
+                    'label' => 'Student Name',
                     'value' => function ($model) {
-                        $submission = $model->sUBMISSION;
-                        if ($submission) {
-                            $user = $submission->uSER;
-                            return $user ? Html::encode($user->FIRST_NAME . ' ' . $user->LAST_NAME) : 'N/A';
-                        }
-                        return 'N/A';
+                        // Ensure model is an instance of Grades and handle relationships properly
+                        return $model->sUBMISSION && $model->sUBMISSION->uSER
+                            ? Html::encode($model->sUBMISSION->uSER->FIRST_NAME . ' ' . $model->sUBMISSION->uSER->LAST_NAME)
+                            : 'N/A';
                     },
-                    'label' => 'Student Name'
                 ],
-
-                'GRADE', // Grade column
-
+                'GRADE',
                 [
-                    'class' => ActionColumn::className(),
-                    'urlCreator' => function ($action, Grades $model, $key, $index, $column) {
+                    'class' => 'yii\grid\ActionColumn',
+                    'urlCreator' => function ($action, $model, $key, $index, $column) {
+                        // Ensure model is an instance of Grades for correct URL generation
                         return Url::toRoute([$action, 'GRADE_ID' => $model->GRADE_ID]);
-                    }
-                ],
-
-                // Checkbox column with Select All and Delete Selected in the header
-                [
-                    'class' => 'yii\grid\CheckboxColumn',
-                    'checkboxOptions' => function ($model) {
-                        return ['value' => $model->GRADE_ID];
                     },
-                    'header' => Html::checkBox('select_all', false, [
-                        'class' => 'select-all',
-                        'label' => 'Select All',
-                    ]) . ' ' . Html::submitButton('Delete Selected', [
-                        'class' => 'btn btn-danger btn-sm ms-2',
-                        'data-confirm' => 'Are you sure you want to delete the selected grades?',
-                        'form' => 'multiple-delete-form',
-                    ]),
                 ],
             ],
         ]); ?>
+        <?php Pjax::end(); ?>
     <?php endif; ?>
-
-    <?= Html::endForm(); ?>
-    <?php Pjax::end(); ?>
 </div>
 
 <?php
 $js = <<<JS
-// Handle "Select All" functionality
-$('.select-all').on('click', function () {
-    var isChecked = $(this).is(':checked');
-    $('input[name="selection[]"]').prop('checked', isChecked);
-});
+// Hide all assignments except the clicked one and show grades section
+$('.assignment-link').on('click', function(e) {
+    e.preventDefault(); // Prevent default link behavior
+    var clickedAssignmentId = $(this).parent().attr('id').split('-')[1]; // Get the assignment ID
+    
+    // Hide all assignments
+    $('.assignment').each(function() {
+        if ($(this).attr('id') !== 'assignment-' + clickedAssignmentId) {
+            $(this).hide();
+        }
+    });
 
-// Hide assignment links when one is clicked
-$('.assignment-link').on('click', function () {
-    $('#assignment-links').hide(); // Hide the assignment links
+    // Show the clicked assignment and the grades section
+    $('#assignment-' + clickedAssignmentId).show();
+    
+    // Optionally, navigate to the grades page for the clicked assignment
+    window.location.href = $(this).attr('href');
 });
 JS;
 $this->registerJs(new JsExpression($js));
