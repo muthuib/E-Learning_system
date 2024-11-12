@@ -8,7 +8,6 @@ use yii\bootstrap5\ActiveForm;
 /* @var $token string */
 
 $this->title = 'Reset Password';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="site-reset-password">
