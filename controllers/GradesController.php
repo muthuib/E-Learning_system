@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Grades;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use app\models\search\GradesSearch;
@@ -21,17 +22,33 @@ class GradesController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+         //restricting user access not to type unauthorized directory  to access it when logged in
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['delete', 'create', 'update', 'view', 'index', 'view-by-assignment'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['admin'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['delete', 'create', 'update', 'view', 'index', 'view-by-assignment'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['instructor'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['#'], // Same actions
+                        'allow' => true, // Deny access to other users
+                        'roles' => ['student'], // Authenticated users
+                        'denyCallback' => function ($rule, $action) {
+                            Yii::$app->session->setFlash('error', 'You do not have permission to access this page.');
+                            return Yii::$app->response->redirect(['site/index']); // Redirect to the home page or any page
+                        },
                     ],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
     /**
@@ -39,16 +56,30 @@ class GradesController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
-    {
-        $searchModel = new GradesSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+   public function actionIndex($courseId = null, $assignmentId = null)
+{
+    $searchModel = new GradesSearch();
+    $queryParams = $this->request->queryParams;
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+    // Add courseId and assignmentId to the query params if they are provided
+    if ($courseId !== null) {
+        $queryParams['GradesSearch']['COURSE_ID'] = $courseId;
     }
+    if ($assignmentId !== null) {
+        $queryParams['GradesSearch']['ASSIGNMENT_ID'] = $assignmentId;
+    }
+
+    // Use the modified query params to filter data
+    $dataProvider = $searchModel->search($queryParams);
+
+    return $this->render('index', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'courseId' => $courseId,
+        'assignmentId' => $assignmentId,
+    ]);
+}
+
     /**
      * Lists all submissions to allow adding of muiltiple grades.
      *

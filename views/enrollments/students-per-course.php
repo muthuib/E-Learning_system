@@ -70,13 +70,15 @@ $this->title = 'Students Per Course';
                         <td><?= Html::encode($enrollment->ENROLLED_AT) ?></td>
                         <td>
                             <!-- Delete button for enrolled student -->
+                            <?php if (Yii::$app->user->can('admin')): ?>
                             <?= Html::a('Delete', ['enrollments/delete', 'ENROLLMENT_ID' => $enrollment->ENROLLMENT_ID], [
-                                            'class' => 'btn btn-danger btn-sm',
-                                            'data' => [
-                                                'confirm' => 'Are you sure you want to delete this student from the enrollment list?',
-                                                'method' => 'post',
-                                            ],
-                                        ]) ?>
+                                                'class' => 'btn btn-danger btn-sm',
+                                                'data' => [
+                                                    'confirm' => 'Are you sure you want to delete this student from the enrollment list?',
+                                                    'method' => 'post',
+                                                ],
+                                            ]) ?>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php

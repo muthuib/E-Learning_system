@@ -6,6 +6,7 @@ use Yii;
 use app\web\Controller;
 use app\models\Assignments;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use app\models\search\AssignmentsSearch;
 
@@ -19,17 +20,33 @@ class AssignmentsController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        //restricting user access not to type unauthorized directory  to access it when logged in
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['delete', 'create', 'update', 'view', 'index'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['admin'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['delete', 'create', 'update', 'view', 'index'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['instructor'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['index', 'view'], // Same actions
+                        'allow' => true, // Deny access to other users
+                        'roles' => ['student'], // Authenticated users
+                        'denyCallback' => function ($rule, $action) {
+                            Yii::$app->session->setFlash('error', 'You do not have permission to access this page.');
+                            return Yii::$app->response->redirect(['site/index']); // Redirect to the home page or any page
+                        },
                     ],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
     /**
@@ -37,16 +54,23 @@ class AssignmentsController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
-    {
-        $searchModel = new AssignmentsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+   
+    public function actionIndex($courseId = null)
+{
+    $searchModel = new AssignmentsSearch();
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+    // Set the courseId in the search model
+    $searchModel->courseId = $courseId;
+
+    // Merge the query params with the courseId and pass it to the search method
+    $dataProvider = $searchModel->search(array_merge(Yii::$app->request->queryParams, ['courseId' => $courseId]));
+
+    return $this->render('index', [
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'courseId' => $courseId, // Pass courseId to the view
+    ]);
+}
 
     /**
      * Displays a single Assignments model.

@@ -13,14 +13,17 @@ use yii\widgets\DetailView;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?php if (Yii::$app->user->can('admin')): ?>
         <?= Html::a('Update', ['update', 'ENROLLMENT_ID' => $model->ENROLLMENT_ID], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'ENROLLMENT_ID' => $model->ENROLLMENT_ID], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+                'class' => 'btn btn-danger',
+                'data' => [
+                    'confirm' => 'Are you sure you want to delete this item?',
+                    'method' => 'post',
+                ],
+            ]) ?>
+        <?php endif; ?>
+        <?= Html::a('Back', ['enrollments/index'], ['class' => 'btn btn-secondary']) ?>
     </p>
 
     <?= DetailView::widget([

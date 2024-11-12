@@ -9,6 +9,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use app\models\Enrollment;
 
 
 /**
@@ -76,8 +77,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             ['STATUS', 'default', 'value' => self::STATUS_INACTIVE],
             ['STATUS', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
             // Ensure USER_ROLE is required and only accepts values from RBAC roles
-            ['USER_ROLE', 'required'],
-            ['USER_ROLE', 'in', 'range' => array_keys(Yii::$app->authManager->getRoles())],
+            // ['USER_ROLE', 'required'],
+            // ['USER_ROLE', 'in', 'range' => array_keys(Yii::$app->authManager->getRoles())],
         ];
     }
 
@@ -122,10 +123,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      * @param string $email
      * @return static|null
      */
-    // public static function findByEmail($email)
-    // {
-    //     return static::findOne(['EMAIL' => $email]); //'status' => self::STATUS_ACTIVE
-    // }
+
     public static function findByEmail($email)
     {
         return static::findOne(['EMAIL' => $email, 'STATUS' => self::STATUS_ACTIVE]);
@@ -216,6 +214,15 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->PASSWORD = Yii::$app->security->generatePasswordHash($PASSWORD);
     }
+    
+    /**
+     * Generates "Access_token
+     * @throws Exception
+     */
+    public function generateAccessToken(): string
+    {
+        return $this->ACCESS_TOKEN = Yii::$app->security->generateRandomString();
+    }
 
     /**
      * Generates "remember me" authentication key
@@ -269,6 +276,17 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         $auth = Yii::$app->authManager;
         return $auth->getRolesByUser($this->ID); // Assuming 'ID' is the primary key in the user table
     }
-    
-
+    public function getRole()
+    {
+        // Get the role of the user from the auth_assignment table
+        $authAssignment = Yii::$app->authManager->getAssignments($this->ID);
+        return $authAssignment ? key($authAssignment) : null;  // Return the role name (key)
+    }
+ /**
+     * Get the enrollments for the user (students).
+     */
+    public function getEnrollments()
+    {
+        return $this->hasMany(Enrollments::class, ['USER_ID' => 'ID']);
+    }
 }

@@ -18,7 +18,9 @@ $this->title = 'Courses';
     <div class="text-end mb-3">
         <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
         <?= Html::a('Enroll a Course', ['enrollments/create'], ['class' => 'btn btn-primary']) ?>
+        <?php if (Yii::$app->user->can('admin')): ?>
         <?= Html::a('Add Course', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php endif; ?>
         <?php else: ?>
         <?= Html::a('Enroll a Course', ['enrollments/create'], ['class' => 'btn btn-primary']) ?>
         <?php endif; ?>
@@ -50,7 +52,8 @@ $this->title = 'Courses';
                         <!-- Indicate enrollment -->
 
                         <?php if ($hasLessons): ?>
-                        <?= Html::a('Continue with Classes', ['lessons/index', 'COURSE_ID' => $model->COURSE_ID], ['class' => 'btn btn-dark btn-block']) ?>
+                        <?= Html::a('Continue with Classes', ['continue-classes', 'courseId' => $model->COURSE_ID], ['class' => 'btn btn-dark btn-block']) ?>
+
                         <?php else: ?>
                         <span class='btn btn-secondary btn-block'>No Lessons Available</span>
                         <?php endif; ?>
@@ -60,7 +63,7 @@ $this->title = 'Courses';
                     </div> <br>
                     <div class="d-flex justify-content-between">
                         <!-- Conditional display of Update and Delete buttons to only admins and instructors -->
-                        <?php if (Yii::$app->user->can('admin') || Yii::$app->user->can('instructor')): ?>
+                        <?php if (Yii::$app->user->can('admin')): ?>
                         <a href="<?= Url::to(['update', 'COURSE_ID' => $model->COURSE_ID]) ?>"
                             class="btn btn-primary">Update</a>
                         <?= Html::a('Delete', ['delete', 'COURSE_ID' => $model->COURSE_ID], [

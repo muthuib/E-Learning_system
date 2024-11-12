@@ -8,6 +8,7 @@ use app\web\Controller;
 use app\models\Enrollments;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use app\models\search\EnrollmentsSearch;
 
@@ -32,6 +33,34 @@ class EnrollmentsController extends Controller
                 ],
             ]
         );
+        //restricting user access not to type unauthorized directory  to access it when logged in
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['students-per-course', 'delete','create', 'update', 'view'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['admin'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['students-per-course', 'index', 'view', 'create'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['instructor'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'create'], // Same actions
+                        'allow' => true, // Deny access to other users
+                        'roles' => ['student'], // Authenticated users
+                        'denyCallback' => function ($rule, $action) {
+                            Yii::$app->session->setFlash('error', 'You do not have permission to access this page.');
+                            return Yii::$app->response->redirect(['site/index']); // Redirect to the home page or any page
+                        },
+                    ],                  
+                ],
+            ],
+        ];
+    
     }
 
     /**
@@ -167,7 +196,18 @@ class EnrollmentsController extends Controller
     //function to show students enrolled per course
     public function actionStudentsPerCourse()
     {
-        $courses = Courses::find()->with('enrollments.uSER')->all();
+        // Check if the user is an admin
+        if (Yii::$app->user->can('admin')) {
+            // Admins see all courses
+            $courses = Courses::find()->with('enrollments.uSER')->all();
+        } else {
+            // Instructors see only the courses they are assigned to
+            $instructorId = Yii::$app->user->identity->ID;
+            $courses = Courses::find()
+                ->where(['instructor_id' => $instructorId])
+                ->with('enrollments.uSER')
+                ->all();
+        }
 
         return $this->render('students-per-course', [
             'dataProvider' => new \yii\data\ArrayDataProvider([
@@ -178,5 +218,6 @@ class EnrollmentsController extends Controller
             ]),
         ]);
     }
+
 
 }

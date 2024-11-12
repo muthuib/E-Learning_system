@@ -2,12 +2,15 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Courses;
-use app\models\search\CoursesSearch;
+use app\models\Lessons;
 use app\web\Controller;
-use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii;
+use yii\filters\AccessControl;
+use yii\data\ActiveDataProvider;
+use yii\web\NotFoundHttpException;
+use app\models\search\CoursesSearch;
 /**
  * CoursesController implements the CRUD actions for Courses model.
  */
@@ -18,17 +21,28 @@ class CoursesController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        //restricting user access not to type unauthorized directory  to access it when logged in
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'delete', 'create', 'update', 'view', 'continue-classes'], // Specify the actions to protect
+                        'allow' => true,
+                        'roles' => ['admin'], // Allow access for these roles
+                    ],
+                    [
+                        'actions' => ['index', 'view', 'continue-classes'], // Same actions
+                        'allow' => true, // Deny access to other users
+                        'roles' => ['student', 'instructor'], // Authenticated users
+                        'denyCallback' => function ($rule, $action) {
+                            Yii::$app->session->setFlash('error', 'You do not have permission to access this page.');
+                            return Yii::$app->response->redirect(['site/index']); // Redirect to the home page or any page
+                        },
                     ],
                 ],
-            ]
-        );
+            ],
+        ];
     }
 
     /**
@@ -44,6 +58,26 @@ class CoursesController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+    public function actionContinueClasses($courseId)
+    {
+        // Ensure the courseId is valid
+        $course = Courses::findOne($courseId);
+
+        if (!$course) {
+            throw new NotFoundHttpException('The requested course does not exist.');
+        }
+
+        // Get lessons for the selected course
+        $dataProvider = new ActiveDataProvider([
+            'query' => Lessons::find()->where(['COURSE_ID' => $courseId]),
+        ]);
+
+        // Render the 'continue-classes' view
+        return $this->render('continue-classes', [
+            'dataProvider' => $dataProvider,
+            'course' => $course,
         ]);
     }
 

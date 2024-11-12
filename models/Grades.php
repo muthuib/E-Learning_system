@@ -60,5 +60,11 @@ class Grades extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Submissions::class, ['SUBMISSION_ID' => 'SUBMISSION_ID']);
 }
+
+public function getAssignment()
+{
+    return $this->hasOne(Assignments::class, ['ASSIGNMENT_ID' => 'ASSIGNMENT_ID']);
+}
+
     
 }

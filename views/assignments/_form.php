@@ -9,12 +9,18 @@ use yii\helpers\ArrayHelper;
 /** @var app\models\Assignments $model */
 /** @var yii\widgets\ActiveForm $form */
 
-// Fetch the courses assigned to the current instructor
 $userId = Yii::$app->user->id; // Get the currently logged-in user ID
-$assignedCourses = Courses::find()
-    ->where(['INSTRUCTOR_ID' => $userId]) // Adjust the condition as per your model
-    ->all();
 
+// Check if the user is an admin or instructor
+if (Yii::$app->user->can('admin')) {
+    // If the user is an admin, fetch all courses
+    $assignedCourses = Courses::find()->all();
+} elseif (Yii::$app->user->can('instructor')) {
+    // If the user is an instructor, fetch the courses assigned to the current instructor
+    $assignedCourses = Courses::find()
+        ->where(['INSTRUCTOR_ID' => $userId]) // Adjust the condition as per your model
+        ->all();
+}
 ?>
 
 <div class="assignments-form">
@@ -35,6 +41,7 @@ $assignedCourses = Courses::find()
     <?php endif; ?>
 
     <?= $form->field($model, 'TITLE')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'TOTAL_MARKS')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'DESCRIPTION')->textarea(['rows' => 6]) ?>
 
