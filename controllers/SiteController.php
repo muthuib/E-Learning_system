@@ -126,7 +126,7 @@ class SiteController extends Controller
                 return $this->redirect(Yii::$app->homeUrl);
             } else {
                 // If signup fails, flash error messages are set in the model
-               // Yii::$app->session->setFlash('error', 'There was a problem signing up. Please ensure your email is not already registered.');
+               //Yii::$app->session->setFlash('error', 'There was a problem signing up. Please ensure your email is not already registered.');
             }
         }
 

@@ -51,10 +51,11 @@ h6 {
     padding: 20px;
   }
 }
-/* Target all labels associated with required fields */
-label.required::after {
-    content: " *"; /* Add the asterisk after the label */
-    color: red; /* Set the color of the asterisk to red */
+/*--------------------------------------------------------------
+# Add * to required fields
+--------------------------------------------------------------*/
+.required::before { 
+  content:" * "; color:red;
 }
 
 /*--------------------------------------------------------------
