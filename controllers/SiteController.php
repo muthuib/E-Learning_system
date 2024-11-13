@@ -373,8 +373,8 @@ class SiteController extends Controller
 
         // Process the form submission
         if ($model->load(Yii::$app->request->post()) && $model->resetPassword($user)) {
-            Yii::$app->session->setFlash('success', 'Password reset was successful.');
-            return $this->goHome();
+            Yii::$app->session->setFlash('success', 'Password reset was successful. Kindly Login with your new password.');
+            return $this->redirect(['site/login']);
         }
 
         // Render the reset password form if not submitted

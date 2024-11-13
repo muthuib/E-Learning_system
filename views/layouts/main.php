@@ -18,6 +18,38 @@ $this->registerMetaTag(['name' => 'description', 'content' => $this->params['met
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
 $this->registerJsFile('@web/js/jquery.min.js', ['position' => View::POS_HEAD]);
+
+// Register custom CSS for alert positioning
+$this->registerCss('
+    .alert {
+        position: fixed;
+        top: 100px;
+        left: 60%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 900px;
+        z-index: 1050; /* Ensures it stays on top */
+        margin-bottom: 20px;
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .alert-dismissible .close {
+        color: white;
+        opacity: 1;
+    }
+
+    // .alert-success {
+    //     background-color: #28a745;
+    //     color: white;
+    // }
+
+    // .alert-danger {
+    //     background-color: #dc3545;
+    //     color: white;
+    // }
+');
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -42,20 +74,23 @@ $this->registerJsFile('@web/js/jquery.min.js', ['position' => View::POS_HEAD]);
         echo $this->render('/dashboard/sidebar');
     }
     ?>
+
+    <!-- Place alert widget outside content for visibility -->
+    <div style="max-width: 900px; position: relative;">
+        <?= Alert::widget() ?>
+    </div>
+
+    <?php if (!Yii::$app->user->isGuest) : ?>
     <main id="main" class="main">
         <div class="container">
             <div class="pagetitle">
                 <?php if (!empty($this->params['breadcrumbs'])) : ?>
                 <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
                 <?php endif ?>
-                <div style="max-width: 900px;">
-                    <!-- Adjust max-width as needed -->
-                    <?= Alert::widget() ?>
-                </div>
-
-                <?= $content ?>
             </div>
         </div>
+        <?php endif; ?>
+        <?= $content ?>
     </main>
     <?php $this->endBody() ?>
 </body>

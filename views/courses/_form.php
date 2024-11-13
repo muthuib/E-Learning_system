@@ -5,19 +5,23 @@ use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\User;
 
-
-/** @var yii\web\View $this */
-/** @var app\models\Courses $model */
-/** @var yii\widgets\ActiveForm $form */
+/* @var yii\web\View $this */
+/* @var app\models\Courses $model */
+/* @var yii\widgets\ActiveForm $form */
 ?>
 
 <div class="courses-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => ['enctype' => 'multipart/form-data'], // Enable file upload
+    ]); ?>
 
     <?= $form->field($model, 'COURSE_NAME')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'DESCRIPTION')->textarea(['rows' => 6]) ?>
+
+    <?= $form->field($model, 'IMAGE')->fileInput() ?>
+    <!-- Use 'imageFile' field for file input -->
 
     <?php
     // Check if the current user is an instructor or admin based on RBAC
@@ -36,6 +40,7 @@ use app\models\User;
         echo $form->field($model, 'INSTRUCTOR_ID')->dropDownList($instructorList, ['prompt' => 'Select Instructor']);
     }
     ?>
+
     <div class="form-group">
         <?= Html::submitButton(
             $model->isNewRecord ? 'Add course' : 'Update course',
@@ -44,6 +49,7 @@ use app\models\User;
         <!-- Back button -->
         <?= Html::a('Back', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
+
     <?php ActiveForm::end(); ?>
 
 </div>

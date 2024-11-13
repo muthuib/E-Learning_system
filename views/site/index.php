@@ -10,17 +10,19 @@ $this->title = 'E-Learning Platform';
 ?>
 
 <div class="site-index">
-<!-- Add the image -->
-<img src="/images/hero.JPG" alt="Hero Image" class="hero-image">
-
-<section class="hero">
-    <div class="hero-text">
-        <h1>Learn Anytime, Anywhere</h1>
-        <p>Access a variety of courses and enhance your skills from the comfort of your home.</p>
-        <a href="<?= Url::to(['/courses/index']) ?>" class="btn btn-primary">Explore Courses</a>
-        <a href="<?= Url::to(['/site/signup']) ?>" class="btn btn-secondary">Get Started</a>
-    </div>
-</section>
+    <!-- Add the image
+<img src="/images/hero.JPG" alt="Hero Image" class="hero-image"> -->
+    <section class="hero">
+        <div class="hero-text">
+            <!-- Add header at the top -->
+            <div class="text-center" style="margin-top: 10px;">
+                <h1 style="font-size: 45px; color:black; font-weight: bold;">Learn Anytime, Anywhere</h1>
+            </div>
+            <p>Access a variety of courses and enhance your skills from the comfort of your home.</p>
+            <a href="<?= Url::to(['/courses/index']) ?>" class="btn btn-primary">Explore Courses</a>
+            <a href="<?= Url::to(['/site/signup']) ?>" class="btn btn-secondary">Get Started</a>
+        </div>
+    </section>
 
     <!-- Features Section -->
     <section class="features">
@@ -51,12 +53,13 @@ $this->title = 'E-Learning Platform';
         <h2>Popular Courses</h2>
         <div class="course-grid">
             <?php foreach ($courses as $course): ?>
-                <div class="course-item">
-                    <img src="<?= Html::encode($course->IMAGE) ?>" alt="<?= Html::encode($course->COURSE_NAME) ?>">
-                    <h3><?= Html::encode($course->COURSE_NAME) ?></h3>
-                    <p><?= Html::encode($course->DESCRIPTION) ?></p>
-                    <a href="<?= Url::to(['/courses/view', 'id' => $course->COURSE_ID]) ?>" class="btn btn-primary">View Course</a>
-                </div>
+            <div class="course-item">
+                <img src="<?= Html::encode($course->IMAGE) ?>" alt="<?= Html::encode($course->COURSE_NAME) ?>">
+                <h3><?= Html::encode($course->COURSE_NAME) ?></h3>
+                <p><?= Html::encode($course->DESCRIPTION) ?></p>
+                <a href="<?= Url::to(['/courses/view', 'id' => $course->COURSE_ID]) ?>" class="btn btn-primary">View
+                    Course</a>
+            </div>
             <?php endforeach; ?>
         </div>
     </section>
@@ -66,10 +69,10 @@ $this->title = 'E-Learning Platform';
         <h2>What Our Students Say</h2>
         <div class="testimonial-carousel">
             <?php foreach ($testimonials as $testimonial): ?>
-                <div class="testimonial">
-                    <p>"<?= Html::encode($testimonial->MESSAGE) ?>"</p>
-                    <h4>- <?= Html::encode($testimonial->NAME) ?></h4>
-                </div>
+            <div class="testimonial">
+                <p>"<?= Html::encode($testimonial->MESSAGE) ?>"</p>
+                <h4>- <?= Html::encode($testimonial->NAME) ?></h4>
+            </div>
             <?php endforeach; ?>
         </div>
     </section>

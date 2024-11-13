@@ -45,6 +45,13 @@
             "enabled": false
         }
     },
+     "autoload": {
+        "psr-4": {
+            "app\\": "models/",
+            "app\\helpers\\": "helpers/"
+        }
+    }, 
+
     "scripts": {
         "post-install-cmd": [
             "yii\\composer\\Installer::postInstall"
@@ -76,4 +83,5 @@
             "url": "https://asset-packagist.org"
         }
     ]
+    
 }
