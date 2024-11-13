@@ -6,6 +6,8 @@ use Yii;
 use app\models\Courses;
 use app\models\Lessons;
 use app\web\Controller;
+use app\helpers\FileHelper;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
@@ -68,7 +70,6 @@ class CoursesController extends Controller
         if (!$course) {
             throw new NotFoundHttpException('The requested course does not exist.');
         }
-
         // Get lessons for the selected course
         $dataProvider = new ActiveDataProvider([
             'query' => Lessons::find()->where(['COURSE_ID' => $courseId]),
@@ -105,6 +106,27 @@ class CoursesController extends Controller
         $model = new Courses();
 
         if ($this->request->isPost) {
+            //start of file upload implementation
+            // Handle the file upload using the helper
+            $model->imageFile = UploadedFile::getInstance($model, 'IMAGE');
+
+            if ($model->imageFile) {
+                // Validate the file type (e.g., allow only images)
+                if (FileHelper::validateFileType($model->imageFile, ['image/jpeg', 'image/jfif', 'image/png'])) {
+                    // Save the file using the helper
+                    $fileName = FileHelper::saveFile($model->imageFile);
+
+                    if ($fileName) {
+                        // Save the file name in the database
+                        $model->IMAGE = $fileName;
+                    } else {
+                        Yii::$app->session->setFlash('error', 'File upload failed.');
+                    }
+                } else {
+                    Yii::$app->session->setFlash('error', 'Invalid file type.');
+                }
+            }
+            //end of file upload implementation
             if ($model->load($this->request->post()) && $model->save()) {
                 Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Course added successfully.');
 
@@ -129,18 +151,53 @@ class CoursesController extends Controller
     public function actionUpdate($COURSE_ID)
     {
         $model = $this->findModel($COURSE_ID);
+        $oldImage = $model->IMAGE; // Store the current image path
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Course updated successfully.');
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                // Handle the file upload using the helper
+                $model->imageFile = UploadedFile::getInstance($model, 'IMAGE');
 
+                if ($model->imageFile) {
+                    // Validate the file type (e.g., allow only images)
+                    if (FileHelper::validateFileType($model->imageFile, ['image/jpeg', 'image/jfif', 'image/png'])) {
+                        // Save the file using the helper
+                        $fileName = FileHelper::saveFile($model->imageFile);
 
-            return $this->redirect(['index', 'COURSE_ID' => $model->COURSE_ID]);
+                        if ($fileName) {
+                            // Save the file name in the database
+                            $model->IMAGE = $fileName;
+
+                            // Optionally delete the old image file if it exists
+                            if ($oldImage && file_exists(Yii::getAlias('@webroot') . '/' . $oldImage)) {
+                                unlink(Yii::getAlias('@webroot') . '/' . $oldImage);
+                            }
+                        } else {
+                            Yii::$app->session->setFlash('error', 'File upload failed.');
+                            $model->IMAGE = $oldImage; // Revert to the old image if upload fails
+                        }
+                    } else {
+                        Yii::$app->session->setFlash('error', 'Invalid file type.');
+                        $model->IMAGE = $oldImage; // Revert to the old image if type is invalid
+                    }
+                } else {
+                    // If no new image is uploaded, retain the old image
+                    $model->IMAGE = $oldImage;
+                }
+
+                // Save the model data after setting the correct image path
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', '<i class="bi bi-check-circle me-2" style="font-size: 1.5rem;"></i> Course updated successfully.');
+                    return $this->redirect(['index', 'COURSE_ID' => $model->COURSE_ID]);
+                }
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
     }
+
 
     /**
      * Deletes an existing Courses model.

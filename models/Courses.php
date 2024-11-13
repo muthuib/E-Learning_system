@@ -34,6 +34,9 @@ class Courses extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    
+     public $imageFile; //declared as a public property for the form to handle the file input.
+     
     public function rules()
     {
         return [
@@ -44,6 +47,7 @@ class Courses extends \yii\db\ActiveRecord
             [['CREATED_AT', 'UPDATED_AT'], 'safe'],
             [['COURSE_NAME'], 'string', 'max' => 255],
             [['INSTRUCTOR_ID'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['INSTRUCTOR_ID' => 'ID']],
+            
         ];
     }
 
@@ -59,8 +63,10 @@ class Courses extends \yii\db\ActiveRecord
             'INSTRUCTOR_ID' => 'Instructor',
             'CREATED_AT' => 'Created At',
             'UPDATED_AT' => 'Updated At',
+            
         ];
     }
+    
 
     /**
      * Gets query for [[Assignments]].

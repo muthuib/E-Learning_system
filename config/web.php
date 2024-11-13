@@ -6,7 +6,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'Roundtech E-lerning portal', // Add your application name here
+    'name' => 'Roundtech E-learning portal', // Add your application name here
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [

@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use app\helpers\EmailHelper;  // Import the EmailHelper class
 
 class PasswordResetRequestForm extends Model
 {
@@ -19,32 +20,31 @@ class PasswordResetRequestForm extends Model
     }
 
     public function sendEmail()
-    {
-        $user = User::findOne(['EMAIL' => $this->email]);
-        if (!$user) {
-            return false;
-        }
-        // If no user is found
-        if (!$user) {
-            Yii::$app->session->setFlash('error', 'No user with this email address found.');
-            return false;
-        }
-
-        // Check if the user's account is active (adjust based on your user model)
-        if ($user->STATUS !== User::STATUS_ACTIVE) {
-            Yii::$app->session->setFlash('error', 'This email is not activated.');
-            return false;
-        }
-        $user->generatePasswordResetToken();
-        if ($user->save()) {
-            return Yii::$app->mailer->compose()
-                ->setFrom([Yii::$app->params['adminEmail'] => Yii::$app->name])
-                ->setTo($this->email)
-                ->setSubject('Password reset for ' . Yii::$app->name)
-                ->setTextBody('Please click the following link to reset your password: ' .
-                    Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $user->PASSWORD_RESET_TOKEN]))
-                ->send();
-        }
+{
+    $user = User::findOne(['EMAIL' => $this->email]);
+    if (!$user) {
+        Yii::$app->session->setFlash('error', 'No user with this email address found.');
         return false;
     }
+
+    if ($user->STATUS !== User::STATUS_ACTIVE) {
+        Yii::$app->session->setFlash('error', 'This email is not activated.');
+        return false;
+    }
+
+    $user->generatePasswordResetToken();
+    if ($user->save()) {
+        // Use the helper to send the email
+        return EmailHelper::sendEmail(
+            $user->EMAIL, 
+                $user->FIRST_NAME, 
+                'Password Reset Request', 
+                'Hello ' . htmlspecialchars($user->FIRST_NAME) . ',<br><br>Click the link below to reset your password:<br>' . 
+                '<a href="' . Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $user->PASSWORD_RESET_TOKEN]) . '">Reset Password</a>'
+            );
+    }
+
+    return false;
+}
+
 }

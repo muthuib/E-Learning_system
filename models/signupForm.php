@@ -3,7 +3,8 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use app\helpers\EmailHelper;  // Import the EmailHelper class
+
+use yii\rbac\Role;
 
 class SignupForm extends Model
 {
@@ -13,13 +14,12 @@ class SignupForm extends Model
     public $phone_number;
     public $password;
     public $password_repeat;
-
-    // user_role awill be set to 'student' by default since its a required field
     public $user_role = 'student';  // Default role is 'student'
+
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email', 'phone_number', 'password', 'password_repeat',  'user_role'], 'required'],
+            [['first_name', 'last_name', 'email', 'phone_number', 'password', 'password_repeat'], 'required'],
             ['email', 'email'],
             [['password', 'password_repeat'], 'string', 'min' => 4, 'max' => 100],
             ['phone_number', 'string', 'min' => 10, 'max' => 13],
@@ -39,16 +39,18 @@ class SignupForm extends Model
             'phone_number' => 'Phone Number',
             'password' => 'Password',
             'password_repeat' => 'Repeat Password',
-            'user_role' => 'User Role',
+            'user_role' => 'User Role',  // Still here for display purposes, but not used for input
         ];
     }
-      // Custom validation for email
+
+    // Custom validation for email
     public function validateEmail($attribute, $params)
     {
         if (User::find()->where(['email' => $this->email])->exists()) {
             $this->addError($attribute, 'This email address is already registered.');
         }
     }
+
     // Custom validation for phone number
     public function validatePhoneNumber($attribute, $params)
     {
@@ -73,9 +75,18 @@ class SignupForm extends Model
         $user->AUTH_KEY = Yii::$app->security->generateRandomString();
         $user->generateEmailVerificationToken();
         $user->STATUS = 9;  // User initially inactive
-        $user->USER_ROLE = $this->user_role;  // Set default user role to 'student'
 
+        // Save the user first to get the user ID
         if ($user->save()) {
+            // Assign the 'student' role using RBAC
+            $auth = Yii::$app->authManager;
+            $role = $auth->getRole('student'); // Assuming 'student' role exists in RBAC
+
+            if ($role) {
+                // Assign the role to the new user
+                $auth->assign($role, $user->ID); // Assign the role to the new user
+            }
+
             // Use the EmailHelper to send the confirmation email
             $emailSent = EmailHelper::sendEmail(
                 $user->EMAIL, 
@@ -90,6 +101,7 @@ class SignupForm extends Model
             } else {
                 Yii::$app->session->setFlash('error', 'There was an error sending the confirmation email.');
             }
+
             return Yii::$app->response->redirect(['site/index']);
         } else {
             Yii::$app->session->setFlash('error', 'There was a problem signing up. Details: ' . print_r($user->errors, true));
