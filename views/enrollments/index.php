@@ -24,6 +24,9 @@ $this->title = 'Enrollments';
         <div class="col-md-4 mb-4">
             <!-- Adjust the col-md-4 for the number of columns per row -->
             <div class="card h-100">
+                <img src="<?= Url::to('@web/uploads/courses/' . Html::encode($model->cOURSE->IMAGE)) ?>"
+                    alt="<?= Html::encode($model->cOURSE->COURSE_NAME) ?>" class="card-img-top"
+                    style="height: 200px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title">
                         <?= Html::encode($model->cOURSE ? $model->cOURSE->COURSE_NAME : 'Course Not Found') ?>
