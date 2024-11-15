@@ -52,7 +52,7 @@ $currentUrl = Yii::$app->request->url;
         </li><!-- End  Courses Nav -->
 
         </li><!-- End of Course categories Nav -->
-        <?php if (Yii::$app->user->can('student')|| Yii::$app->user->can('instructor')): ?>
+        <?php if (Yii::$app->user->can('student') || Yii::$app->user->can('instructor')): ?>
         <li class="nav-item">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/enrollments/index']) ?>">
                 <i class="bi bi-buildings"></i>
@@ -83,6 +83,15 @@ $currentUrl = Yii::$app->request->url;
             </a>
         </li><!-- End of assignments Nav -->
         <li class="nav-item">
+            <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/quizzes/index']) ?>">
+                <i class="bi bi-book"></i>
+                <span>Quizzes</span>
+            </a>
+        </li>
+
+        <!-- End of quizzes Nav -->
+
+        <li class="nav-item">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/submissions/index']) ?>">
                 <i class="bi bi-buildings"></i>
                 <span>Submissions and Grades</span>
@@ -97,7 +106,7 @@ $currentUrl = Yii::$app->request->url;
         </li>
         <?php endif; ?>
         <!-- End of grades Nav -->
-          <li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link collapsed" href="<?= Yii::$app->urlManager->createUrl(['/results/index']) ?>">
                 <i class="bi bi-buildings"></i>
                 <span>Final Results</span>
