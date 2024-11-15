@@ -3,7 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-
+use app\helpers\EmailHelper;  // Import the EmailHelper class
 use yii\rbac\Role;
 
 class SignupForm extends Model
